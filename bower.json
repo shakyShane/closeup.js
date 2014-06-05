@@ -1,0 +1,20 @@
+{
+    "name": "closeup.js",
+    "version": "0.0.1",
+    "main": [
+        "dist/closeup.js"
+    ],
+    "devDependencies": {
+        "norman.js": "0.0.1"
+    },
+    "ignore": [
+        "node_modules/",
+        "test/",
+        ".travis.yml",
+        ".gitignore",
+        ".jshintrc",
+        ".gulpfile.js",
+        "package.json"
+
+    ]
+}

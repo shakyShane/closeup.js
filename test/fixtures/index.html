@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Norman.js Example 1</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+        }
+        .wrapper {
+            text-align: center;
+        }
+        .image {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .image img {
+            display: block;
+        }
+
+        .image .base-image {
+            z-index: 1;
+        }
+
+        .image .zoom-image:hover {
+            cursor: pointer;
+        }
+
+        .image .zoom-image {
+            z-index: 2;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            -webkit-transition: opacity .5s;
+        }
+        .touch {
+            width: 353px;
+            height: 421px;
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            z-index: 3;
+        }
+        .touch:hover {
+            cursor: crosshair;
+        }
+        .loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 10;
+            display: none;
+            color: white;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<p id="debug">Debug</p>
+<div id="controls"></div>
+<div class="wrapper">
+    <div class="image" id="zoom-window">
+        <img src="img/421.jpg" alt="" width="353" height="421" class="base-image" />
+    </div>
+
+    <div class="switcher">
+        <a href="img/421.jpg" data-large="img/600.jpg">Image 1</a>
+        <a href="img/421.jpg" data-large="img/1200.jpg">Image 2</a>
+    </div>
+</div>
+
+<!--<script src="polyfills/ie8.js"></script>-->
+<script src="../../bower_components/norman.js/lib/norman.js"></script>
+<script src="../../lib/closeup.js"></script>
+<script type="text/javascript">
+    var zoomer = new Closeup("#zoom-window", ".base-image");
+</script>
+
+</body>
+</html>
