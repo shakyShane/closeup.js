@@ -16,14 +16,12 @@ module( "event", {
     }
 });
 
-test("Test Instance creation", function () {
+var wrapperClass = ".zoomer";
+var baseImgClass = ".base-image";
 
-    expect(8);
+test("Instance creation with 2 minimum args", function () {
 
-    var zoomer = new Closeup(".zoomer", ".base-image", function () {
-        equal(this.$wrapper.tagName, "DIV");
-        equal(this.$baseImg.tagName, "IMG");
-    });
+    var zoomer = new Closeup(wrapperClass, baseImgClass);
 
     var wrapper = zoomer.$wrapper;
     var baseImg = zoomer.$baseImg;
@@ -35,4 +33,24 @@ test("Test Instance creation", function () {
     equal(baseImg.tagName, "IMG");
     equal(baseImg.style.display, "block");
     equal(baseImg.style.zIndex, 1);
+});
+
+test("Instance creation with config arg", function () {
+    var zoomer = new Closeup(wrapperClass, baseImgClass, {name: "shane"});
+    equal(zoomer.opts.name, "shane");
+});
+
+test("Instance creation with callback", function () {
+    expect(2);
+    new Closeup(wrapperClass, baseImgClass, function () {
+        ok(this.$wrapper);
+        ok(this.$baseImg);
+    });
+});
+
+test("Instance creation with config + callback", function () {
+    expect(1);
+    new Closeup(wrapperClass, baseImgClass, {name: "shane"}, function () {
+        equal(this.opts.name, "shane");
+    });
 });
