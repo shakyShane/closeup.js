@@ -37,3 +37,9 @@ test("Instance creation with config + callback", function () {
         equal(this.opts.name, "shane");
     });
 });
+
+test("Instance When elements not found", function () {
+    new Closeup("wrapperClass", "baseImgClass", {name: "shane"}, function (msg) {
+        ok(typeof msg === "string");
+    });
+});
