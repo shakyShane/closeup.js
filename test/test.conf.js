@@ -15,7 +15,8 @@ module.exports = {
         '../bower_components/norman.js/dist/norman.js',
         '../lib/*.js',
         'fixtures/*.html',
-        'specs/*.js'
+        'specs/*.js',
+        { pattern: 'fixtures/img/**', included: false, served: true }
     ],
 
     // list of files to exclude

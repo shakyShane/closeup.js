@@ -19,25 +19,18 @@
             margin: 0 auto;
         }
 
-        .image img {
-            display: block;
-        }
-
-        .image .base-image {
-            z-index: 1;
-        }
 
         .image .zoom-image:hover {
-            cursor: pointer;
+            /*cursor: pointer;*/
         }
 
         .image .zoom-image {
-            z-index: 2;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            -webkit-transition: opacity .5s;
+            /*z-index: 2;*/
+            /*position: absolute;*/
+            /*top: 0;*/
+            /*left: 0;*/
+            /*opacity: 0;*/
+            /*-webkit-transition: opacity .5s;*/
         }
 
         .touch {
@@ -85,7 +78,18 @@
 <script src="../../bower_components/norman.js/lib/norman.js"></script>
 <script src="../../lib/closeup.js"></script>
 <script type="text/javascript">
-    var zoomer = new Closeup("#zoom-window", ".base-image");
+    var config = {
+        callbacks: {
+            "zoom image loading": function (src) {
+                console.log("Loading: " + src);
+            },
+            "zoom image loaded": function () {
+                console.log(this);
+            }
+        }
+    };
+    var zoomer = new Closeup("#zoom-window", ".base-image", config);
+    zoomer.setZoomImage("img/600.jpg");
 </script>
 
 </body>
