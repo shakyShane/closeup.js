@@ -17,3 +17,11 @@ test("Set Initial Vars", function () {
     var vars   = zoomer.vars;
     ok(vars["zoomVisible"] === false);
 });
+
+test("Set base img x & y", function () {
+    var zoomer = new Closeup(wrapperClass, baseImgClass);
+    ok(typeof zoomer.baseImg.x === "number");
+    ok(typeof zoomer.baseImg.y === "number");
+    ok(typeof zoomer.baseImg.$elem === "object");
+    ok(typeof zoomer.baseImg.$elem.style !== "undefined");
+});
