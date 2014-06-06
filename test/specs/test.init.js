@@ -38,8 +38,8 @@ test("Instance creation with config + callback", function () {
     });
 });
 
-test("Instance When elements not found", function () {
-    new Closeup("wrapperClass", "baseImgClass", {name: "shane"}, function (msg) {
-        ok(typeof msg === "string");
-    });
-});
+//test("Instance When elements not found", function () {
+//    new Closeup("wrapperClass", "baseImgClass", {name: "shane"}, function (msg) {
+//        ok(typeof msg === "string");
+//    });
+//});
