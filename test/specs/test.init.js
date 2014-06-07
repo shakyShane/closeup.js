@@ -7,7 +7,7 @@ test("Instance creation with minimum 2 args", function () {
     var zoomer = new Closeup(wrapperClass, baseImgClass);
 
     var wrapper = zoomer.$wrapper;
-    var baseImg = zoomer.$baseImg;
+    var baseImg = zoomer.$baseImage;
 
     equal(wrapper.tagName, "DIV");
     equal(wrapper.style.position, "relative");
@@ -27,7 +27,7 @@ test("Instance creation with callback", function () {
     expect(2);
     new Closeup(wrapperClass, baseImgClass, function () {
         ok(this.$wrapper);
-        ok(this.$baseImg);
+        ok(this.$baseImage);
     });
 });
 
