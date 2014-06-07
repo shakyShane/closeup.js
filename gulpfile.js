@@ -1,5 +1,20 @@
 var gulp        = require('gulp');
 var browserSync = require('browser-sync');
+var reload      = browserSync.reload;
+
+gulp.task('browser-sync', function() {
+    browserSync.init(null, {
+        server: {
+            baseDir: './'
+        }
+    });
+});
+
+gulp.task('watch', ['browser-sync'], function () {
+    gulp.watch('*.html', reload);
+});
+
+
 var sass        = require('gulp-sass');
 var prefix      = require('gulp-autoprefixer');
 var cp          = require('child_process');
