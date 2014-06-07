@@ -33,7 +33,7 @@ test("Loading a zoom image with callback", function () {
     ok(zoomer.$zoomImage.src.match(/42112\.jpg$/));
 });
 
-test("Callback with successful load", function () {
+test("Callback with successfull load", function () {
 
     expect(1);
 

@@ -6,9 +6,9 @@ test("Set supported features", function () {
 
     var zoomer   = new Closeup(wrapperClass, baseImgClass);
     var supports = zoomer.vars.supports;
-    ok(typeof supports["opacity"]           !== "undefined");
-    ok(typeof supports["transforms"]        !== "undefined");
-    ok(typeof supports["webkitTransforms"]  !== "undefined");
+    ok(typeof supports["opacity"]          !== "undefined");
+    ok(typeof supports["transform"]        !== "undefined");
+    ok(typeof supports["webkitTransform"]  !== "undefined");
 
 });
 
