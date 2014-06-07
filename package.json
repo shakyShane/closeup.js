@@ -25,7 +25,7 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "gulp lint && karma start test/karma.conf.ci"
+    "test": "gulp lint && ./node_modules/karma/bin/karma start test/karma.conf.ci"
   },
   "devDependencies": {
     "karma": "^0.12.16",
