@@ -62,16 +62,18 @@
 </head>
 <body>
 <p id="debug">Debug</p>
-<div id="controls"></div>
 <div class="wrapper">
     <div class="image" id="zoom-window">
-        <img src="img/421.jpg" alt="" width="353" height="421" class="base-image" />
+        <img src="img/421.jpg" alt="" width="353" class="base-image" />
     </div>
 
     <div class="switcher">
-        <a href="img/421.jpg" data-large="img/600.jpg">Image 1</a>
+        <!--<a href="img/421.jpg" data-large="img/600.jpg">Image 1</a>-->
         <a href="img/421.jpg" data-large="img/1200.jpg">Image 2</a>
     </div>
+
+    <button id="showZoomImage">Show Zoom Image</button>
+    <button id="hideZoomImage">Hide Zoom Image</button>
 </div>
 
 <!--<script src="polyfills/ie8.js"></script>-->
@@ -79,17 +81,73 @@
 <script src="../../lib/closeup.js"></script>
 <script type="text/javascript">
     var config = {
+        loadDelay: 2000,
         callbacks: {
+            "init": function () {
+                var loaded = document.createElement("DIV");
+                loaded.style.position = "absolute";
+                loaded.style.color    = "white";
+                loaded.style.top      = "0";
+                loaded.style.left     = "0";
+                loaded.style.zIndex   = "3";
+                loaded.style.display  = "none";
+                loaded.style.width    = "100%";
+                loaded.style.height   = "100%";
+                loaded.innerText      = "LOADING";
+                this.$loader          = loaded;
+                this.$wrapper.appendChild(this.$loader);
+            },
             "zoom image loading": function (src) {
-                console.log("Loading: " + src);
+                this.$loader.style.display = "block";
             },
             "zoom image loaded": function () {
-                console.log(this);
+                var that = this;
+                window.setTimeout(function () {
+                    that.$loader.style.display = "none";
+                }, 2000);
+            },
+            "update zoom position": function (vals) {
+//                console.log(vals);
+            },
+            "mouse move": function (vals) {
+//                console.log(vals);
+            },
+            "mouse enter": function (vals) {
+//                this.$loader.style.display = "block";
+            },
+            "mouse leave": function (vals) {
+//                this.$loader.style.display = "none";
             }
         }
     };
-    var zoomer = new Closeup("#zoom-window", ".base-image", config);
+    var zoomer = new Closeup(
+        document.querySelector("#zoom-window"),
+        document.querySelector(".base-image"), config);
+
     zoomer.setZoomImage("img/600.jpg");
+
+    var button     = document.querySelector("#showZoomImage");
+    var buttonHide = document.querySelector("#hideZoomImage");
+
+    button.addEventListener("touchstart", function (evt) {
+        evt.preventDefault();
+        zoomer.showZoomed();
+    }, false);
+
+    buttonHide.addEventListener("touchstart", function (evt) {
+        evt.preventDefault();
+        zoomer.hideZoomed();
+    }, false);
+
+    var buttons = document.querySelector(".switcher");
+
+    buttons.addEventListener("click", function (evt) {
+        evt.preventDefault();
+        var targetElem = evt.target;
+        var src = targetElem.dataset.large;
+        zoomer.setZoomImage(src);
+    }, false);
+
 </script>
 
 </body>

@@ -12,44 +12,29 @@ test("Loading a zoom image", function () {
 });
 
 
-test("Loading a zoom image with callback", function () {
+test("Loading a zoom image with callbacks", function () {
 
-    expect(4);
+    expect(5);
+
+    var imgSrc = "base/fixtures/img/600.jpg";
+    var regex  = new RegExp("base/fixtures/img/600.jpg");
 
     var config = {
         callbacks: {
             "zoom image loading": function (src) {
-                equal(src, "/42112.jpg");
+                equal(src, imgSrc);
+            },
+            "zoom image loaded": function (elem) {
+                ok(elem.src.match(regex));
             }
         }
     };
 
     var zoomer   = new Closeup(wrapperClass, baseImgClass, config);
 
-    zoomer.setZoomImage("/42112.jpg");
+    zoomer.setZoomImage(imgSrc);
 
     ok(zoomer.$zoomImage);
     ok(zoomer.$zoomImage.tagName === "IMG");
-    ok(zoomer.$zoomImage.src.match(/42112\.jpg$/));
-});
-
-test("Callback with successfull load", function () {
-
-    expect(1);
-
-    var config = {
-        callbacks: {
-            "zoom image loaded": function ($zoomedImage) {
-                equal($zoomedImage.width, 600);
-            }
-        }
-    };
-
-    var zoomer = new Closeup(wrapperClass, baseImgClass, config);
-    var img    = document.createElement("IMG");
-
-    img.width  = 600;
-    img.height = 600;
-
-    zoomer.imageLoaded(img, zoomer.mapper)();
+    ok(zoomer.$zoomImage.src.match(regex));
 });
