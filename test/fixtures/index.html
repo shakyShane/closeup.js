@@ -83,7 +83,7 @@
 <!--<script src="../../dist/closeup.min.js"></script>-->
 <script type="text/javascript">
     var config = {
-        loadDelay: 2000,
+        loadDelay: 0,
         callbacks: {
 //            "init": function () {
 //                var loaded = document.createElement("DIV");
@@ -105,7 +105,7 @@
             "zoom image loaded": function (elem) {
                 loaded = true;
                 debug("loaded image: " + elem.src);
-                this.showZoomed();
+//                this.showZoomed();
             }
 //            "update zoom position": function (vals) {
 ////                console.log(vals);
@@ -122,8 +122,9 @@
         }
     };
     var zoomer = new Closeup(
-        document.querySelector("#zoom-window"),
-        document.querySelector(".base-image"), config);
+            document.querySelector("#zoom-window"),
+            document.querySelector(".base-image"), config)
+                .setZoomImage("img/1200.jpg");
 
     var loaded = false;
 
@@ -132,11 +133,12 @@
 //            zoomer.setZoomImage("img/600.jpg");
 //        }
 //    });
-
-    var zoomBtn = document.querySelector("#showZoomImage")
-        .addEventListener("click", function () {
-            console.log("Clicked");
-        }, false);
+//
+//    var zoomBtn = document.querySelector("#showZoomImage")
+//        .addEventListener("click", function () {
+//            zoomer.setBaseImage("img/600.jpg");
+//            zoomer.setZoomImage("img/1200.jpg");
+//        }, false);
 
 
 
@@ -163,10 +165,10 @@
 //        zoomer.setZoomImage(src);
 //    }, false);
 
-    var debug = function (msg) {
+    function debug(msg) {
         var debug = document.getElementById("debug");
         debug.innerHTML = msg;
-    };
+    }
 </script>
 
 </body>
