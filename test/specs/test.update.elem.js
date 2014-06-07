@@ -29,7 +29,8 @@ test("SET the translate CSS in Webkit", function () {
 
     zoomer.updateElem(100, 100);
 
-    equal(zoomer.$zoomImage.style.webkitTransform, "translate3d(100px, 100px, 0px)");
+    var regex = new RegExp("translate3d\\(100px, 100px, 0p?x?\\)");
+    ok(zoomer.$zoomImage.style.webkitTransform.match(regex));
 });
 
 test("SET the translate CSS (2)", function () {
@@ -39,7 +40,8 @@ test("SET the translate CSS (2)", function () {
 
     zoomer.updateElem(-100, -1000);
 
-    equal(zoomer.$zoomImage.style.transform, "translate3d(-100px, -1000px, 0)");
+    var regex = new RegExp("translate3d\\(-100px, -1000px, 0p?x?\\)");
+    ok(zoomer.$zoomImage.style.transform.match(regex));
 });
 
 

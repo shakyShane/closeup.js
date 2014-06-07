@@ -8,17 +8,18 @@ test("Loading a zoom image", function () {
     var imgSrc = "base/fixtures/img/600.jpg";
     var regex  = new RegExp("base/fixtures/img/600.jpg");
     var zoomer   = new Closeup(wrapperClass, baseImgClass);
+
     zoomer.setZoomImage(imgSrc);
+
     ok(zoomer.$zoomImage);
     ok(zoomer.$zoomImage.tagName === "IMG");
     ok(zoomer.$zoomImage.src.match(regex));
 });
 
 
-test("Loading a zoom image with callbacks", function () {
+asyncTest("Loading a zoom image with callbacks", function () {
 
-    expect(5);
-
+    expect(7);
 
     var imgSrc = "base/fixtures/img/600.jpg";
     var regex  = new RegExp("base/fixtures/img/600.jpg");
@@ -26,24 +27,23 @@ test("Loading a zoom image with callbacks", function () {
     var config = {
 
         callbacks: {
-
             "zoom image loading": function (src) {
+                deepEqual(true, this.vars.imageLoading, "image loading var should be true");
                 equal(src, imgSrc);
             },
             "zoom image loaded": function (elem) {
+                deepEqual(false, this.vars.imageLoading, "image loading var should now be false");
                 ok(elem.src.match(regex));
+                start();
             }
         }
     };
 
-    var zoomer   = new Closeup(wrapperClass, baseImgClass, config);
+    var zoomer = new Closeup(wrapperClass, baseImgClass, config);
 
     zoomer.setZoomImage(imgSrc);
 
     ok(zoomer.$zoomImage);
     ok(zoomer.$zoomImage.tagName === "IMG");
     ok(zoomer.$zoomImage.src.match(regex));
-
-    // Fake the loaded Image
-    zoomer.onLoadCallback()();
 });

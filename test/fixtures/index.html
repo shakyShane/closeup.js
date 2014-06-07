@@ -19,6 +19,15 @@
             margin: 0 auto;
         }
 
+        .ie7 .image {
+            display: inline;
+            zoom: 1;
+        }
+
+        .image img {
+            /*-webkit-transition: .3s opacity ease-out;*/
+        }
+
 
         .image .zoom-image:hover {
             /*cursor: pointer;*/
@@ -30,17 +39,7 @@
             /*top: 0;*/
             /*left: 0;*/
             /*opacity: 0;*/
-            /*-webkit-transition: opacity .5s;*/
-        }
-
-        .touch {
-            width: 353px;
-            height: 421px;
-            position: absolute;
-            display: block;
-            top: 0;
-            left: 0;
-            z-index: 3;
+            -webkit-transition: opacity .5s;
         }
 
         .touch:hover {
@@ -60,6 +59,7 @@
         }
     </style>
 </head>
+<!--<body class="ie7">-->
 <body>
 <p id="debug">Debug</p>
 <div class="wrapper">
@@ -76,48 +76,46 @@
     <button id="hideZoomImage">Hide Zoom Image</button>
 </div>
 
-<!--<script src="polyfills/ie8.js"></script>-->
-<script src="../../bower_components/norman.js/lib/norman.js"></script>
-<script src="../../lib/closeup.js"></script>
+<!--<script src="../../bower_components/jquery/dist/jquery.min.js"></script>-->
+<!--<script src="../../polyfills/addEventListener.js"></script>-->
+<!--<script src="../../bower_components/norman.js/lib/norman.js"></script>-->
+<!--<script src="../../lib/closeup.js"></script>-->
+<script src="../../dist/closeup.min.js"></script>
 <script type="text/javascript">
     var config = {
-        loadDelay: 2000,
         callbacks: {
-            "init": function () {
-                var loaded = document.createElement("DIV");
-                loaded.style.position = "absolute";
-                loaded.style.color    = "white";
-                loaded.style.top      = "0";
-                loaded.style.left     = "0";
-                loaded.style.zIndex   = "3";
-                loaded.style.display  = "none";
-                loaded.style.width    = "100%";
-                loaded.style.height   = "100%";
-                loaded.innerText      = "LOADING";
-                this.$loader          = loaded;
-                this.$wrapper.appendChild(this.$loader);
-            },
-            "zoom image loading": function (src) {
-                this.$loader.style.display = "block";
-            },
-            "zoom image loaded": function () {
-                var that = this;
-                window.setTimeout(function () {
-                    that.$loader.style.display = "none";
-                }, 2000);
-            },
-            "update zoom position": function (vals) {
-//                console.log(vals);
-            },
-            "mouse move": function (vals) {
-//                console.log(vals);
-            },
-            "mouse enter": function (vals) {
+//            "init": function () {
+//                var loaded = document.createElement("DIV");
+//                loaded.style.position = "absolute";
+//                loaded.style.color    = "white";
+//                loaded.style.top      = "0";
+//                loaded.style.left     = "0";
+//                loaded.style.zIndex   = "3";
+//                loaded.style.display  = "none";
+//                loaded.style.width    = "100%";
+//                loaded.style.height   = "100%";
+//                loaded.innerText      = "LOADING";
+//                this.$loader          = loaded;
+//                this.$wrapper.appendChild(this.$loader);
+//            },
+//            "zoom image loading": function (src) {
 //                this.$loader.style.display = "block";
-            },
-            "mouse leave": function (vals) {
+//            },
+//            "zoom image loaded": function () {
 //                this.$loader.style.display = "none";
-            }
+//            },
+//            "update zoom position": function (vals) {
+////                console.log(vals);
+//            },
+//            "mouse move": function (vals) {
+////                console.log(vals);
+//            },
+//            "mouse enter": function (vals) {
+////                this.$loader.style.display = "block";
+//            },
+//            "mouse leave": function (vals) {
+////                this.$loader.style.display = "none";
+//            }
         }
     };
     var zoomer = new Closeup(
