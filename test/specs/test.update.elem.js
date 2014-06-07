@@ -29,7 +29,7 @@ test("SET the translate CSS in Webkit", function () {
 
     zoomer.updateElem(100, 100);
 
-    equal(zoomer.$zoomImage.style.webkitTransform, "translate3d(100px, 100px, 0)");
+    equal(zoomer.$zoomImage.style.webkitTransform, "translate3d(100px, 100px, 0px)");
 });
 
 test("SET the translate CSS (2)", function () {
@@ -39,7 +39,7 @@ test("SET the translate CSS (2)", function () {
 
     zoomer.updateElem(-100, -1000);
 
-    equal(zoomer.$zoomImage.style.transform, "translate3d(-100px, -1000px, 0px)");
+    equal(zoomer.$zoomImage.style.transform, "translate3d(-100px, -1000px, 0)");
 });
 
 
