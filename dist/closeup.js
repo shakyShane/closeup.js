@@ -390,14 +390,12 @@
      */
     Closeup.prototype.setZoomImage = function (src) {
 
-        var that = this;
-        var supports = this.vars.supports;
+        var that               = this;
+        this.vars.imageLoading = true;
 
         that.cb("zoom image loading", src);
 
         var cb = this.onLoadCallback();
-
-        this.vars.imageLoading = true;
 
         if (!this.$zoomImage) {
 
@@ -424,17 +422,20 @@
      */
     Closeup.prototype.onLoadCallback = function () {
 
-        var that = this;
+        var that     = this;
         var supports = this.vars.supports;
 
         return function () {
+
             if (!supports.opacity) {
                 that.$zoomImage.style.display = "none";
             }
-            that.cb("zoom image loaded", that.$zoomImage);
+
             that.imageLoaded();
+
             window.setTimeout(function () {
                 that.vars.imageLoading = false;
+                that.cb("zoom image loaded", that.$zoomImage);
             }, that.opts.loadDelay || 0);
         };
     };
@@ -653,8 +654,6 @@
                 // IE <= 9
                 this.$zoomImage.style.left = x + "px";
                 this.$zoomImage.style.top  = y + "px";
-
-                debug(this.$zoomImage.style.top);
             }
         }
     };

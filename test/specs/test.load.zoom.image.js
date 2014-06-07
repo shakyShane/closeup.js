@@ -7,13 +7,26 @@ test("Loading a zoom image", function () {
 
     var imgSrc = "base/fixtures/img/600.jpg";
     var regex  = new RegExp("base/fixtures/img/600.jpg");
-    var zoomer   = new Closeup(wrapperClass, baseImgClass);
+    var zoomer = new Closeup(wrapperClass, baseImgClass);
 
     zoomer.setZoomImage(imgSrc);
 
     ok(zoomer.$zoomImage);
     ok(zoomer.$zoomImage.tagName === "IMG");
     ok(zoomer.$zoomImage.src.match(regex));
+});
+
+
+asyncTest("Loading a zoom image with immediate callback", function () {
+
+    var imgSrc = "base/fixtures/img/600.jpg";
+    var regex  = new RegExp("base/fixtures/img/600.jpg");
+    var zoomer = new Closeup(wrapperClass, baseImgClass);
+
+    zoomer.setZoomImage(imgSrc, function (elem) {
+        ok(elem.src.match(regex));
+        start();
+    });
 });
 
 

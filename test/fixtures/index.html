@@ -72,17 +72,18 @@
         <a href="img/421.jpg" data-large="img/1200.jpg">Image 2</a>
     </div>
 
-    <button id="showZoomImage">Show Zoom Image</button>
-    <button id="hideZoomImage">Hide Zoom Image</button>
+    <button id="showZoomImage">Zoom</button>
+    <!--<button id="hideZoomImage">Hide Zoom Image</button>-->
 </div>
 
 <!--<script src="../../bower_components/jquery/dist/jquery.min.js"></script>-->
 <!--<script src="../../polyfills/addEventListener.js"></script>-->
-<!--<script src="../../bower_components/norman.js/lib/norman.js"></script>-->
-<!--<script src="../../lib/closeup.js"></script>-->
-<script src="../../dist/closeup.min.js"></script>
+<script src="../../bower_components/norman.js/lib/norman.js"></script>
+<script src="../../lib/closeup.js"></script>
+<!--<script src="../../dist/closeup.min.js"></script>-->
 <script type="text/javascript">
     var config = {
+        loadDelay: 2000,
         callbacks: {
 //            "init": function () {
 //                var loaded = document.createElement("DIV");
@@ -98,12 +99,14 @@
 //                this.$loader          = loaded;
 //                this.$wrapper.appendChild(this.$loader);
 //            },
-//            "zoom image loading": function (src) {
-//                this.$loader.style.display = "block";
-//            },
-//            "zoom image loaded": function () {
-//                this.$loader.style.display = "none";
-//            },
+            "zoom image loading": function (src) {
+                debug("loading image");
+            },
+            "zoom image loaded": function (elem) {
+                loaded = true;
+                debug("loaded image: " + elem.src);
+                this.showZoomed();
+            }
 //            "update zoom position": function (vals) {
 ////                console.log(vals);
 //            },
@@ -122,30 +125,48 @@
         document.querySelector("#zoom-window"),
         document.querySelector(".base-image"), config);
 
-    zoomer.setZoomImage("img/600.jpg");
+    var loaded = false;
 
-    var button     = document.querySelector("#showZoomImage");
-    var buttonHide = document.querySelector("#hideZoomImage");
+//    zoomer.$wrapper.addEventListener("mouseenter", function () {
+//        if (!loaded) {
+//            zoomer.setZoomImage("img/600.jpg");
+//        }
+//    });
 
-    button.addEventListener("touchstart", function (evt) {
-        evt.preventDefault();
-        zoomer.showZoomed();
-    }, false);
+    var zoomBtn = document.querySelector("#showZoomImage")
+        .addEventListener("click", function () {
+            console.log("Clicked");
+        }, false);
 
-    buttonHide.addEventListener("touchstart", function (evt) {
-        evt.preventDefault();
-        zoomer.hideZoomed();
-    }, false);
 
-    var buttons = document.querySelector(".switcher");
 
-    buttons.addEventListener("click", function (evt) {
-        evt.preventDefault();
-        var targetElem = evt.target;
-        var src = targetElem.dataset.large;
-        zoomer.setZoomImage(src);
-    }, false);
 
+//    var button     = document.querySelector("#showZoomImage");
+//    var buttonHide = document.querySelector("#hideZoomImage");
+//
+//    button.addEventListener("touchstart", function (evt) {
+//        evt.preventDefault();
+//        zoomer.showZoomed();
+//    }, false);
+//
+//    buttonHide.addEventListener("touchstart", function (evt) {
+//        evt.preventDefault();
+//        zoomer.hideZoomed();
+//    }, false);
+//
+//    var buttons = document.querySelector(".switcher");
+//
+//    buttons.addEventListener("click", function (evt) {
+//        evt.preventDefault();
+//        var targetElem = evt.target;
+//        var src = targetElem.dataset.large;
+//        zoomer.setZoomImage(src);
+//    }, false);
+
+    var debug = function (msg) {
+        var debug = document.getElementById("debug");
+        debug.innerHTML = msg;
+    };
 </script>
 
 </body>

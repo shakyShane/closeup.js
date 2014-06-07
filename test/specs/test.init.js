@@ -37,3 +37,11 @@ test("Instance creation with config + callback", function () {
         equal(this.opts.name, "shane");
     });
 });
+
+asyncTest("Instance creation with chaining", function () {
+    expect(1);
+    new Closeup(wrapperClass, baseImgClass).setZoomImage("base/fixtures/img/600.jpg", function (elem) {
+        ok(elem.src.indexOf("600.jpg"));
+        start();
+    });
+});
