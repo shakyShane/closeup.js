@@ -2,7 +2,7 @@
     "name": "closeup.js",
     "version": "0.0.1",
     "main": [
-        "dist/closeup.js"
+        "dist/closeup.min.js"
     ],
     "devDependencies": {
         "norman.js": "0.0.1"
