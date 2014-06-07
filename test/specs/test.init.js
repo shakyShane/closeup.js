@@ -40,8 +40,9 @@ test("Instance creation with config + callback", function () {
 
 asyncTest("Instance creation with chaining", function () {
     expect(1);
-    new Closeup(wrapperClass, baseImgClass).setZoomImage("base/fixtures/img/600.jpg", function (elem) {
-        ok(elem.src.indexOf("600.jpg"));
-        start();
-    });
+    new Closeup(wrapperClass, baseImgClass)
+        .setZoomImage("base/fixtures/img/600.jpg", function (elem) {
+            ok(elem.src.indexOf("600.jpg"));
+            start();
+        });
 });
