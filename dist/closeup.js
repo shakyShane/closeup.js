@@ -221,9 +221,9 @@
     "use strict";
 
     var STYLES = {
-        wrapper: ["position: relative", "overflow: hidden"],
+        wrapper: ["position: relative", "overflow: hidden", "display: inline-block"],
         baseImg: ["display: block", "z-index: 1"],
-        zoomImg: ["position: absolute", "z-index: 2", "opacity: 0", "top: 0", "left: 0"]
+        zoomImg: ["position: absolute", "z-index: 2", "opacity: 0", "top: 0", "left: 0", "max-width: none!important"]
     };
 
     var ERRORS = {

@@ -4,5 +4,12 @@ var conf = require("./test.conf");
 
 module.exports = function (config) {
     conf.logLevel = config.LOG_DEBUG;
+    config.files = [
+        '../bower_components/norman.js/dist/norman.js',
+        '../lib/*.js',
+        'fixtures/*.html',
+        'specs/*.js',
+        { pattern: 'fixtures/img/**', included: false, served: true }
+    ];
     config.set(conf);
 };

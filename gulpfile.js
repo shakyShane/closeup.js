@@ -34,3 +34,5 @@ gulp.task('lint', function () {
         .pipe(jshint.reporter("default"))
         .pipe(jshint.reporter("fail"));
 });
+
+gulp.task('build-all', ['build-lib', 'build-poly']);

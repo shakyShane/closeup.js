@@ -11,13 +11,6 @@ module.exports = {
     frameworks: ['qunit'],
 
     // list of files / patterns to load in the browser
-    files: [
-        '../bower_components/norman.js/dist/norman.js',
-        '../lib/*.js',
-        'fixtures/*.html',
-        'specs/*.js',
-        { pattern: 'fixtures/img/**', included: false, served: true }
-    ],
 
     // list of files to exclude
     exclude: [
