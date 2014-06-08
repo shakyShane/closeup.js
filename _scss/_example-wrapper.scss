@@ -1,0 +1,24 @@
+.example-wrapper {
+
+    pre {
+        text-align: left;
+    }
+
+    .lt-ie9 & {
+        .js-toggle {
+            display: none;
+        }
+    }
+
+    .zoom-window {
+
+        .ie7 & {
+            zoom: 1;
+            display: inline!important;
+        }
+
+        border: 2px solid white;
+        box-shadow: 0 0 10px #327DD0;
+
+    }
+}

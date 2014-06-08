@@ -1,3 +1,33 @@
+//addEventListener polyfill 1.0 / Eirik Backer / MIT Licence
+(function(win, doc){
+    if(win.addEventListener)return;		//No need to polyfill
+
+    function docHijack(p){var old = doc[p];doc[p] = function(v){return addListen(old(v))}}
+    function addEvent(on, fn, self){
+        return (self = this).attachEvent('on' + on, function(e){
+            var e = e || win.event;
+            e.preventDefault  = e.preventDefault  || function(){e.returnValue = false}
+            e.stopPropagation = e.stopPropagation || function(){e.cancelBubble = true}
+            fn.call(self, e);
+        });
+    }
+    function addListen(obj, i){
+        if(i = obj.length)while(i--)obj[i].addEventListener = addEvent;
+        else obj.addEventListener = addEvent;
+        return obj;
+    }
+
+    addListen([doc, win]);
+    if('Element' in win)win.Element.prototype.addEventListener = addEvent;			//IE8
+    else{		//IE < 8
+        doc.attachEvent('onreadystatechange', function(){addListen(doc.all)});		//Make sure we also init at domReady
+        docHijack('getElementsByTagName');
+        docHijack('getElementById');
+        docHijack('createElement');
+        addListen(doc.all);
+    }
+
+})(window, document);
 (function (window, undefined) {
 
     "use strict";
@@ -236,9 +266,9 @@
     var Closeup = function (wrapper, baseImg, opts, cb) {
 
         return this.addCallbacks(opts)
-                .handleArguments(arguments)
-                .initElements(wrapper, baseImg)
-                .setMapping(this.$baseImage);
+            .handleArguments(arguments)
+            .initElements(wrapper, baseImg)
+            .setMapping(this.$baseImage);
     };
 
 
@@ -266,6 +296,14 @@
         this.cb("set mapping", this.mapper);
 
         return this;
+    };
+
+    /**
+     * Update mapper size
+     */
+    Closeup.prototype.refresh = function () {
+        this.mapper.viewBox.width  = this.$baseImage.width;
+        this.mapper.viewBox.height = this.$baseImage.height;
     };
 
     /**
@@ -548,13 +586,13 @@
 
             that.touchOffsetX =
                 evt.touches[0].pageX
-                    - that.$zoomImage.getBoundingClientRect().left
-                    + that.$baseImage.getBoundingClientRect().left;
+                - that.$zoomImage.getBoundingClientRect().left
+                + that.$baseImage.getBoundingClientRect().left;
 
             that.touchOffsetY =
                 evt.touches[0].pageY
-                    - that.$zoomImage.getBoundingClientRect().top
-                    + that.$baseImage.getBoundingClientRect().top;
+                - that.$zoomImage.getBoundingClientRect().top
+                + that.$baseImage.getBoundingClientRect().top;
         };
     };
 

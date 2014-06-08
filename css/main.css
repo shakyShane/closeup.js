@@ -669,7 +669,31 @@ footer a:hover {
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) { }
 
-.image-wrapper {
-  display: inline-block; }
-  .image-wrapper img {
-    max-width: none !important; }
+.hidden {
+  display: none; }
+  .lt-ie10 .hidden {
+    display: block; }
+  .hidden.active {
+    display: block; }
+
+.example-wrapper pre {
+  text-align: left; }
+.lt-ie9 .example-wrapper .js-toggle {
+  display: none; }
+.example-wrapper .zoom-window {
+  border: 2px solid white;
+  -webkit-box-shadow: 0 0 10px #327DD0;
+  box-shadow: 0 0 10px #327DD0; }
+  .ie7 .example-wrapper .zoom-window {
+    zoom: 1;
+    display: inline !important; }
+
+.zoom-window {
+  margin: 0 auto; }
+  .zoom-window:hover {
+    cursor: crosshair; }
+  .zoom-window img {
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s; }

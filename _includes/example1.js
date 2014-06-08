@@ -1,3 +1,7 @@
 var zoomer =
-    new Closeup(".image-wrapper", ".base-img")
-        .setZoomImage("http://placekitten.com/1200/1200");
+    new Closeup("#example1", "#img1")
+        .setZoomImage("images/600.jpg");
+
+
+
+

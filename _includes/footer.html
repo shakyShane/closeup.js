@@ -1,0 +1,17 @@
+<script>
+
+    function handleClick(evt) {
+
+        if (evt.target.className.match(/js-toggle/)) {
+            evt.preventDefault();
+            evt.target.classList.toggle("active");
+            document.querySelector(evt.target.dataset.target)
+                .classList.toggle("active");
+        }
+    }
+
+    if (typeof document.body.classList !== "undefined") {
+        document.addEventListener("click", handleClick, false);
+    }
+
+</script>

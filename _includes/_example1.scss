@@ -1,0 +1,9 @@
+.zoom-window {
+    &:hover {
+        cursor: crosshair;
+    }
+    img {
+        transition: opacity .5s;
+    }
+    margin: 0 auto;
+}

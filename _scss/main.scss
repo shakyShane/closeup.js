@@ -1,11 +1,5 @@
 @import "pygment_trac";
 @import "stylesheet";
-
-.image-wrapper {
-
-    display: inline-block;
-
-    img {
-        max-width: none!important;
-    }
-}
+@import "custom";
+@import "example-wrapper";
+@import "../_includes/example1";
