@@ -12,6 +12,7 @@ test("Instance creation with minimum 2 args", function () {
     equal(wrapper.tagName, "DIV");
     equal(wrapper.style.position, "relative");
     equal(wrapper.style.overflow, "hidden");
+    equal(wrapper.style.display, "inline-block");
 
     equal(baseImg.tagName, "IMG");
     equal(baseImg.style.display, "block");
@@ -39,10 +40,11 @@ test("Instance creation with config + callback", function () {
 });
 
 asyncTest("Instance creation with chaining", function () {
-    expect(1);
+    expect(2);
     new Closeup(wrapperClass, baseImgClass)
         .setZoomImage("base/fixtures/img/600.jpg", function (elem) {
             ok(elem.src.indexOf("600.jpg"));
+            equal(elem.style.maxWidth, "none");
             start();
         });
 });
