@@ -269,6 +269,14 @@
     };
 
     /**
+     * Update mapper size
+     */
+    Closeup.prototype.refresh = function () {
+        this.mapper.viewBox.width  = this.$baseImage.width;
+        this.mapper.viewBox.height = this.$baseImage.height;
+    };
+
+    /**
      * Setup instance Vars
      */
     Closeup.prototype.setVars = function () {
