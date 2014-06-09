@@ -85,6 +85,9 @@ header h1 {
     line-height: 1;
     margin-bottom: 0.2em;
     width: 540px;
+    a {
+        color: white;
+    }
 }
 
 header h2 {
@@ -100,6 +103,7 @@ header h2 {
     position: relative;
     width: 940px;
     margin: 0 auto;
+
 }
 
 #content-wrapper {

@@ -55,6 +55,7 @@ header {
         margin-bottom: 0;
         border-radius: .5em;
         background: black;
+        background: rgba(black, .5);
         border: 2px solid lighten(#2B6FC6, 40%);
         box-shadow:
             0 0 3px darken(#2B6FC6, 30%) inset;
@@ -101,4 +102,17 @@ header {
         padding-left: 0;
     }
 
+}
+
+#sidebar {
+    .example-list {
+        @media (max-width: 600px) {
+            display: none;
+        }
+    }
+    h2 {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin-bottom: 12px;
+    }
 }
