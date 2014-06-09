@@ -72,7 +72,7 @@ gulp.task('sass', function () {
 gulp.task('watch', function () {
     gulp.watch(['_scss/*.scss', '_includes/*.scss'], ['sass']);
     gulp.watch([
-        'index.html',
+        '*.html',
         '_layouts/*.html',
         'js/*.js',
         '_includes/*.html',

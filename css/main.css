@@ -683,6 +683,9 @@ footer a:hover {
   .tldr-list li {
     line-height: 32px;
     border-bottom: 1px solid #f4f4f4; }
+  @media (max-width: 600px) {
+    .tldr-list {
+      padding-left: 0; } }
 
 @media (min-width: 601px) and (max-width: 800px) {
   header h1 {
@@ -738,7 +741,8 @@ footer a:hover {
   @media (max-width: 600px) {
     .col {
       text-align: center;
-      width: 100%; } }
+      width: 100%;
+      padding-left: 0; } }
 
 .example-wrapper pre {
   text-align: left; }

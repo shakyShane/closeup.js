@@ -25,8 +25,9 @@ layout: default
                     </div>
                 </div>
 
-            <h2>How to use</h2>
-                <p>Include the Javascript file at the bottom of your page, followed by your own...</p>
+
+            <h2>Basic Usage</h2>
+                <p>Include the Javascript file at the bottom of your page, followed by your own file.</p>
 {% highlight javascript %}
        ...
         <script src="closeup.min.js"></script>
@@ -35,7 +36,7 @@ layout: default
 </html>
 {% endhighlight %}
 
-                <p>... in which you'll have something like this:</p>
+                <p>Then use the following to reproduce the example above.</p>
 
             <h3><strong>JS</strong></h3>
 
@@ -43,26 +44,40 @@ layout: default
     {% include example1.js %}
 {% endhighlight %}
 
-            <h3><strong>HTML</strong></h3>
+            <h3><strong>HTML</strong> - <a href="" class="js-toggle" data-target="#example1-html">Show Source</a></h3>
 
+            <div class="hidden" id="example1-html">
             <p>Note that the height & width of the image is set in this example.</p>
 
 {% highlight html %}
 {% include example1.html %}
 {% endhighlight %}
 
+            </div>
 
-            <h3><strong>SCSS/LESS</strong></h3>
+            <h3><strong>SCSS/LESS</strong> - <a href="" class="js-toggle" data-target="#example1-scss">Show Source</a></h3>
+            <div class="hidden" id="example1-scss">
 {% highlight scss %}
 {% include _example1.scss %}
 {% endhighlight %}
+            </div>
 
             </div>
+
+            <hr />
+
+            <h1>RWD usage</h1>
+            <p>If you cannot specify the image width & height as mentioned above, you can do this instead</p>
+            {% highlight scss %}
+            {% include example2.js %}
+            {% endhighlight %}
+
+            <p>This technique will ensure the correct Height & Width is retrieved for the base imgage.</p>
+
         </section>
         <aside id="sidebar">
 
             <a href="https://github.com/shakyShane/closeup.js" class="button github"><small>View project on</small>GitHub</a>
-
 
             <a href="https://github.com/shakyShane/closeup.js/zipball/master" class="button download">
                 <small>Download</small>

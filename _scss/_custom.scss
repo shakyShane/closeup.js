@@ -12,14 +12,18 @@
 }
 
 .tldr-list {
+
     list-style: none;
     padding-left: 10px;
+
     li {
         line-height: 32px;
         border-bottom: 1px solid #f4f4f4;
     }
-//    font-size: 1.2em;
-//    color: #777777
+
+    @media (max-width: 600px) {
+        padding-left: 0;
+    }
 }
 
 
@@ -44,11 +48,6 @@ header {
     position: absolute;
     top: 30%;
     right: 0;
-
-
-//    padding-top: 10px;
-//    padding-bottom: 30px;
-
 
     code {
         padding: 1.5em 2em;
@@ -75,7 +74,6 @@ header {
 
         code {
             padding: .5em;
-//            top: 10px;
         }
     }
 }
@@ -100,6 +98,7 @@ header {
     @media (max-width: 600px) {
         text-align: center;
         width: 100%;
+        padding-left: 0;
     }
 
 }
