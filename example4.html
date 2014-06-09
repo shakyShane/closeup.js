@@ -1,0 +1,50 @@
+---
+layout: default
+---
+
+<div id="content-wrapper">
+    <div class="inner clearfix">
+        <section id="main-content">
+
+            <div class="example-wrapper">
+
+                <div>
+                    {% include example4.html %}
+                </div>
+
+            </div>
+
+            <h2>Click to load</h2>
+            <p>This is a useful technique if you want your users to manually trigger the zoom functionality
+            (especially useful on mobile/tablet)</p>
+
+            <h3><strong>JS</strong></h3>
+
+{% highlight javascript %}
+    {% include example4.js %}
+{% endhighlight %}
+
+            <h3><strong>HTML</strong></h3>
+
+            <p>Note that the height & width of the image is set in this example.</p>
+
+{% highlight html %}
+{% include example4.html %}
+{% endhighlight %}
+
+
+            <h3><strong>SCSS/LESS</strong></h3>
+{% highlight scss %}
+{% include _example4.scss %}
+{% endhighlight %}
+
+        </section>
+
+        {% include sidebar.html %}
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    {% include example4.js %}
+</script>
