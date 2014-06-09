@@ -3,7 +3,7 @@ title: closeup.js
 email: shane.osbourne8@gmail.com
 description: "A modern, minimalist image zoomer."
 baseurl: ""
-url: "http://yourdomain.com"
+url: "http://shakyshane.github.io"
 highlighter: pygments # or rouge or null
 exclude: ["node_modules", "gulpfile.js", "package.json", "bower_components"]
 
