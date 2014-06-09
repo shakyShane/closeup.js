@@ -6,7 +6,6 @@ module.exports = function (config) {
     conf.autoWatch = false;
     conf.singleRun = true;
     config.files = [
-        '../bower_components/norman.js/dist/norman.js',
         '../dist/closeup.min.js',
         'fixtures/*.html',
         'specs/*.js',
