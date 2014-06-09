@@ -315,6 +315,7 @@
             zoomVisible: false,
             hasZoomImage: false,
             imageLoading: false,
+            baseImageLoading: false,
             supports: {}
         };
 
@@ -478,14 +479,14 @@
      */
     Closeup.prototype.setBaseImage = function (src, userCallback) {
 
-        this.vars.imageLoading = true;
+        this.vars.baseImageLoading = true;
         this.cb("base image loading", src);
 
         var that = this;
 
         var cb = function () {
 
-            that.vars.imageLoading = false;
+            that.vars.baseImageLoading = false;
             that.baseImg = new Subject(that.$baseImage);
             that.updateMapping(that.$baseImage);
 

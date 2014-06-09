@@ -34,11 +34,11 @@ asyncTest("Loading a base image with callbacks", function () {
 
         callbacks: {
             "base image loading": function (src) {
-                deepEqual(true, this.vars.imageLoading, "image loading var should be true");
+                deepEqual(true, this.vars.baseImageLoading, "image loading var should be true");
                 equal(src, imgSrc);
             },
             "base image loaded": function (elem) {
-                deepEqual(false, this.vars.imageLoading, "image loading var should now be false");
+                deepEqual(false, this.vars.baseImageLoading, "image loading var should now be false");
                 ok(elem.src.match(regex));
                 start();
             }
