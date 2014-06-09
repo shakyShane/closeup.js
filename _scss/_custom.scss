@@ -10,3 +10,94 @@
         display: block;
     }
 }
+
+.tldr-list {
+    list-style: none;
+    padding-left: 10px;
+    li {
+        line-height: 32px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+//    font-size: 1.2em;
+//    color: #777777
+}
+
+
+header {
+    @media (min-width: 601px) and (max-width: 800px) {
+        h1 {
+            margin-bottom: 40px;
+        }
+    }
+    @media (max-width: 600px) {
+        .inner {
+            h1, h2 {
+                text-align: center;
+            }
+
+        }
+    }
+}
+
+.install-preview {
+
+    position: absolute;
+    top: 30%;
+    right: 0;
+
+
+//    padding-top: 10px;
+//    padding-bottom: 30px;
+
+
+    code {
+        padding: 1.5em 2em;
+        display: inline-block;
+        margin-bottom: 0;
+        border-radius: .5em;
+        background: black;
+        border: 2px solid lighten(#2B6FC6, 40%);
+        box-shadow:
+            0 0 3px darken(#2B6FC6, 30%) inset;
+        color: white;
+        text-shadow: 1px 1px 1px darken(#2B6FC6, 10%);
+    }
+
+    @media (min-width: 601px) and (max-width: 800px) {
+        top: 10%;
+    }
+
+    @media (max-width: 600px) {
+
+        position: relative;
+        text-align: center;
+        margin-top: 10px;
+
+        code {
+            padding: .5em;
+//            top: 10px;
+        }
+    }
+}
+
+.col-wrapper {
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+.col {
+
+    box-sizing: border-box;
+    float: left;
+    width: 50%;
+    padding-left: 20px;
+
+    &:first-child {
+        padding-left: 0;
+    }
+
+    @media (max-width: 600px) {
+
+        width: 100%;
+    }
+
+}

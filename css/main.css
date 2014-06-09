@@ -6,11 +6,6 @@
   font-style: italic; }
 
 /* Comment */
-.highlight .err {
-  color: #a61717;
-  background-color: #e3d2d2; }
-
-/* Error */
 .highlight .k {
   font-weight: bold; }
 
@@ -328,8 +323,8 @@ a:hover {
   color: #2268b2; }
 
 header {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
   background: #2e7bcf url(../images/header-bg.jpg) 0 0 repeat-x;
   border-bottom: solid 1px #275da1; }
@@ -389,23 +384,35 @@ a.button {
   color: #fff;
   padding-left: 68px;
   padding-top: 22px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; }
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 2px solid #cadcf3;
+  -webkit-box-shadow: 0 0 2px #6E6F77 inset;
+  box-shadow: 0 0 2px #6E6F77 inset;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s; }
+  a.button:hover {
+    background-color: black; }
+
+.button.download {
+  background: #2B6FC6 url(../images/download-button.png) 0 0 no-repeat; }
 
 a.button small {
   display: block;
   font-size: 11px; }
 
-header a.button {
-  position: absolute;
-  right: 0;
-  top: 0;
-  background: transparent url(../images/github-button.png) 0 0 no-repeat; }
+.github.button {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #2B6FC6 url(../images/github-button.png) 0 0 no-repeat; }
 
 aside a.button {
   width: 138px;
   padding-left: 64px;
   display: block;
-  background: transparent url(../images/download-button.png) 0 0 no-repeat;
   margin-bottom: 20px;
   font-size: 21px; }
 
@@ -440,10 +447,8 @@ ul, ol, dl {
 hr {
   height: 1px;
   line-height: 1px;
-  margin-top: 1em;
-  padding-bottom: 1em;
-  border: none;
-  background: transparent url('../images/hr.png') 0 0 no-repeat; }
+  margin-top: 4em;
+  margin-bottom: 2em; }
 
 table {
   width: 100%;
@@ -471,8 +476,7 @@ form {
 #main-content h1:before {
   content: "/";
   color: #9ddcff;
-  padding-right: 0.3em;
-  margin-left: -0.9em; }
+  padding-right: 0.3em; }
 
 #main-content h2 {
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
@@ -484,8 +488,7 @@ form {
 #main-content h2:before {
   content: "//";
   color: #9ddcff;
-  padding-right: 0.3em;
-  margin-left: -1.5em; }
+  padding-right: 0.3em; }
 
 #main-content h3 {
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
@@ -498,8 +501,7 @@ form {
 #main-content h3:before {
   content: "///";
   color: #9ddcff;
-  padding-right: 0.3em;
-  margin-left: -2em; }
+  padding-right: 0.3em; }
 
 #main-content h4 {
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
@@ -510,8 +512,7 @@ form {
 h4:before {
   content: "////";
   color: #9ddcff;
-  padding-right: 0.3em;
-  margin-left: -2.8em; }
+  padding-right: 0.3em; }
 
 #main-content h5 {
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
@@ -675,6 +676,66 @@ footer a:hover {
     display: block; }
   .hidden.active {
     display: block; }
+
+.tldr-list {
+  list-style: none;
+  padding-left: 10px; }
+  .tldr-list li {
+    line-height: 32px;
+    border-bottom: 1px solid #f4f4f4; }
+
+@media (min-width: 601px) and (max-width: 800px) {
+  header h1 {
+    margin-bottom: 40px; } }
+@media (max-width: 600px) {
+  header .inner h1, header .inner h2 {
+    text-align: center; } }
+
+.install-preview {
+  position: absolute;
+  top: 30%;
+  right: 0; }
+  .install-preview code {
+    padding: 1.5em 2em;
+    display: inline-block;
+    margin-bottom: 0;
+    -webkit-border-radius: 0.5em;
+    border-radius: 0.5em;
+    background: black;
+    border: 2px solid #cadcf3;
+    -webkit-box-shadow: 0 0 3px #102948 inset;
+    box-shadow: 0 0 3px #102948 inset;
+    color: white;
+    text-shadow: 1px 1px 1px #22599c; }
+  @media (min-width: 601px) and (max-width: 800px) {
+    .install-preview {
+      top: 10%; } }
+  @media (max-width: 600px) {
+    .install-preview {
+      position: relative;
+      text-align: center;
+      margin-top: 10px; }
+      .install-preview code {
+        padding: 0.5em; } }
+
+.col-wrapper {
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.col {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  width: 50%;
+  padding-left: 20px; }
+  .col:first-child {
+    padding-left: 0; }
+  @media (max-width: 600px) {
+    .col {
+      width: 100%; } }
 
 .example-wrapper pre {
   text-align: left; }

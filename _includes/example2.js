@@ -1,10 +1,10 @@
-var wrapper = document.querySelector(".image-wrapper");
-var elem    = document.querySelector(".base-img");
+var wrapper = document.querySelector("#example1");
+var elem    = document.querySelector("#img1");
 
 elem.onload = function () {
     var zoomer =
         new Closeup(wrapper, elem)
-            .setZoomImage("http://placekitten.com/600/600");
+            .setZoomImage("images/600.jpg");
 };
 
 
