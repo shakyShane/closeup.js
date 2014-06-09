@@ -725,6 +725,7 @@ footer a:hover {
   box-sizing: border-box; }
 
 .col {
+  margin-top: 20px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -732,9 +733,11 @@ footer a:hover {
   width: 50%;
   padding-left: 20px; }
   .col:first-child {
-    padding-left: 0; }
+    padding-left: 0;
+    margin-top: 0; }
   @media (max-width: 600px) {
     .col {
+      text-align: center;
       width: 100%; } }
 
 .example-wrapper pre {

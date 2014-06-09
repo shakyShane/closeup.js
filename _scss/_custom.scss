@@ -86,6 +86,7 @@ header {
 }
 .col {
 
+    margin-top: 20px;
     box-sizing: border-box;
     float: left;
     width: 50%;
@@ -93,10 +94,11 @@ header {
 
     &:first-child {
         padding-left: 0;
+        margin-top: 0;
     }
 
     @media (max-width: 600px) {
-
+        text-align: center;
         width: 100%;
     }
 
