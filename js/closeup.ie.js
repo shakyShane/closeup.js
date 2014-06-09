@@ -266,9 +266,9 @@
     var Closeup = function (wrapper, baseImg, opts, cb) {
 
         return this.addCallbacks(opts)
-            .handleArguments(arguments)
-            .initElements(wrapper, baseImg)
-            .setMapping(this.$baseImage);
+                .handleArguments(arguments)
+                .initElements(wrapper, baseImg)
+                .setMapping(this.$baseImage);
     };
 
 
@@ -315,6 +315,7 @@
             zoomVisible: false,
             hasZoomImage: false,
             imageLoading: false,
+            baseImageLoading: false,
             supports: {}
         };
 
@@ -478,14 +479,14 @@
      */
     Closeup.prototype.setBaseImage = function (src, userCallback) {
 
-        this.vars.imageLoading = true;
+        this.vars.baseImageLoading = true;
         this.cb("base image loading", src);
 
         var that = this;
 
         var cb = function () {
 
-            that.vars.imageLoading = false;
+            that.vars.baseImageLoading = false;
             that.baseImg = new Subject(that.$baseImage);
             that.updateMapping(that.$baseImage);
 
@@ -586,13 +587,13 @@
 
             that.touchOffsetX =
                 evt.touches[0].pageX
-                - that.$zoomImage.getBoundingClientRect().left
-                + that.$baseImage.getBoundingClientRect().left;
+                    - that.$zoomImage.getBoundingClientRect().left
+                    + that.$baseImage.getBoundingClientRect().left;
 
             that.touchOffsetY =
                 evt.touches[0].pageY
-                - that.$zoomImage.getBoundingClientRect().top
-                + that.$baseImage.getBoundingClientRect().top;
+                    - that.$zoomImage.getBoundingClientRect().top
+                    + that.$baseImage.getBoundingClientRect().top;
         };
     };
 

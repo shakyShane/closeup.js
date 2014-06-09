@@ -1,0 +1,40 @@
+.zoom-window {
+    &:hover {
+        cursor: crosshair;
+    }
+    img {
+        transition: opacity .5s;
+    }
+    margin: 0 auto;
+}
+
+.zoom-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    width: 100%;
+    display: none;
+    text-align: center;
+    background: rgba(white, .9);
+}
+
+.thumbs {
+
+    a {
+
+        display: inline-block;
+        margin: 3px;
+
+        &:hover, &.active {
+            img {
+                border-color: #327DD0;
+            }
+        }
+
+        img {
+            border: 2px solid white;
+            box-shadow: 0 0 10px #327DD0;
+        }
+    }
+}

@@ -269,6 +269,14 @@
     };
 
     /**
+     * Update mapper size
+     */
+    Closeup.prototype.refresh = function () {
+        this.mapper.viewBox.width  = this.$baseImage.width;
+        this.mapper.viewBox.height = this.$baseImage.height;
+    };
+
+    /**
      * Setup instance Vars
      */
     Closeup.prototype.setVars = function () {
@@ -277,6 +285,7 @@
             zoomVisible: false,
             hasZoomImage: false,
             imageLoading: false,
+            baseImageLoading: false,
             supports: {}
         };
 
@@ -440,14 +449,14 @@
      */
     Closeup.prototype.setBaseImage = function (src, userCallback) {
 
-        this.vars.imageLoading = true;
+        this.vars.baseImageLoading = true;
         this.cb("base image loading", src);
 
         var that = this;
 
         var cb = function () {
 
-            that.vars.imageLoading = false;
+            that.vars.baseImageLoading = false;
             that.baseImg = new Subject(that.$baseImage);
             that.updateMapping(that.$baseImage);
 

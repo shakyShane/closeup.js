@@ -796,3 +796,33 @@ footer a:hover {
   display: none;
   text-align: center;
   background: rgba(255, 255, 255, 0.9); }
+
+.zoom-window {
+  margin: 0 auto; }
+  .zoom-window:hover {
+    cursor: crosshair; }
+  .zoom-window img {
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s; }
+
+.zoom-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  width: 100%;
+  display: none;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9); }
+
+.thumbs a {
+  display: inline-block;
+  margin: 3px; }
+  .thumbs a:hover img, .thumbs a.active img {
+    border-color: #327DD0; }
+  .thumbs a img {
+    border: 2px solid white;
+    -webkit-box-shadow: 0 0 10px #327DD0;
+    box-shadow: 0 0 10px #327DD0; }
