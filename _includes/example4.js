@@ -12,7 +12,7 @@ button.addEventListener("click", function (evt) {
     button.innerText = "Loading, Please Wait...";
 
     // Set the zoom image, and reset the button the text when loaded
-    zoomer.setZoomImage("images/image1-large.jpg", function () {
+    zoomer.setZoomImage("../images/image1-large.jpg", function () {
         button.innerText = "Ready :)";
     });
 
