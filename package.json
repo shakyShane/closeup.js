@@ -25,7 +25,7 @@
     "node": ">= 0.10.0"
   },
   "scripts": {
-    "test": "gulp lint && gulp build-all && ./node_modules/karma/bin/karma start test/karma.conf.ci"
+    "test": "bower install && gulp lint && gulp build-all && ./node_modules/karma/bin/karma start test/karma.conf.ci"
   },
   "devDependencies": {
     "karma": "~0.12.16",
