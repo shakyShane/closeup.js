@@ -236,6 +236,7 @@
         hasZoomImage: false,
         imageLoading: false,
         baseImageLoading: false,
+        boundary: 50,
         supports: {}
     };
 
@@ -244,12 +245,15 @@
      * Create and return an instance of Closeup.js
      *
      * @constructor
+     * @return Closeup
      */
     var Closeup = function (wrapper, baseImg, opts, cb) {
 
         return this._addCallbacks(opts)
                 ._handleArguments(arguments)
                 ._initElements(wrapper, baseImg)
+                ._setVars()
+                ._setEvents(this.$wrapper)
                 ._setMapping(this.$baseImage);
     };
 
@@ -280,20 +284,10 @@
                 height: $elem.clientHeight,
                 width: $elem.clientWidth
             },
-            boundary: 50
+            boundary: this.vars.boundary
         });
 
         this._cb("set mapping", this.mapper);
-
-        return this;
-    };
-
-    /**
-     * API method for re-mapping values after a base image change/resize
-     */
-    Closeup.prototype.refresh = function () {
-
-        this._updateMapping(this.$baseImage);
 
         return this;
     };
@@ -319,6 +313,8 @@
         this._setSupports(this.vars, this.$wrapper);
 
         this._cb("set vars", this.vars);
+
+        return this;
     };
 
 
@@ -372,6 +368,8 @@
         }, false);
 
         this._cb("set events", this);
+
+        return this;
     };
 
     /**
@@ -386,128 +384,6 @@
 
             this._updateElem(newValues.x, newValues.y);
         }
-    };
-
-    /**
-     *
-     */
-    Closeup.prototype.hideZoomed = function () {
-
-        var supports = this.vars.supports;
-        var $img     = this.$zoomImage;
-
-        if ($img) {
-
-            if (supports.opacity) {
-                $img.style.opacity = "0";
-            } else {
-                $img.style.display = "none";
-            }
-
-            this.vars.zoomVisible = false;
-
-            this._cb("hide zoom", $img);
-        }
-
-        return this;
-    };
-
-
-    /**
-     *
-     */
-    Closeup.prototype.showZoomed = function () {
-
-        var supports = this.vars.supports;
-        var $img     = this.$zoomImage;
-
-        if ($img) {
-
-            if (supports.opacity) {
-                $img.style.opacity = "1";
-            } else {
-                $img.style.display = "block";
-            }
-
-            this.vars.zoomVisible = true;
-
-            this._cb("show zoom", $img);
-        }
-
-        return this;
-    };
-
-    /**
-     * Set the zoom image - async
-     * @param {string} src
-     * @param {function} [userCallback]
-     */
-    Closeup.prototype.setZoomImage = function (src, userCallback) {
-
-        this.vars.imageLoading = true;
-
-        this._cb("zoom image loading", src);
-
-        var cb = this._onLoadCallback(userCallback);
-
-        if (!this.$zoomImage) {
-
-            this.$zoomImage = document.createElement("IMG");
-            this.$zoomImage.className = "zoom-image";
-            this.$zoomImage.src = src;
-            this.$zoomImage.style.cssText = STYLES.zoomImg.join(";");
-            this.$wrapper.appendChild(this.$zoomImage);
-
-        } else {
-
-            // Fire callbacks if same src
-            if (this.$zoomImage.src.indexOf(src) > 0) {
-                cb();
-            } else {
-                this.$zoomImage.src = src;
-            }
-        }
-
-        this.$zoomImage.onload = cb;
-
-        return this;
-    };
-
-    /**
-     * @param {string} src
-     * @param {function} [userCallback]
-     */
-    Closeup.prototype.setBaseImage = function (src, userCallback) {
-
-        this.vars.baseImageLoading = true;
-        this._cb("base image loading", src);
-
-        var that = this;
-
-        var cb = function () {
-
-            that.vars.baseImageLoading = false;
-            that.baseImg = new Subject(that.$baseImage);
-            that._updateMapping(that.$baseImage);
-
-            that._cb("base image loaded", that.$baseImage);
-
-            if (typeof userCallback === "function") {
-                userCallback(that.$baseImage);
-            }
-
-        };
-
-        // Fire callbacks if same src
-        if (this.$baseImage.src.indexOf(src) > -1) {
-            cb();
-        } else {
-            this.$baseImage.src = src;
-        }
-
-        this.$baseImage.onload = cb;
-
-        return this;
     };
 
     /**
@@ -726,9 +602,6 @@
 
         this._cb("init", this);
 
-        this._setVars();
-        this._setEvents(this.$wrapper);
-
         return this;
     };
 
@@ -775,6 +648,142 @@
         return tmp
             .replace("%x", x)
             .replace("%y", y);
+    };
+
+
+    /** --------- Start public methods ---------- **/
+
+
+    /**
+     * Show the Zoomed image
+     */
+    Closeup.prototype.showZoomed = function () {
+
+        var supports = this.vars.supports;
+        var $img     = this.$zoomImage;
+
+        if ($img) {
+
+            if (supports.opacity) {
+                $img.style.opacity = "1";
+            } else {
+                $img.style.display = "block";
+            }
+
+            this.vars.zoomVisible = true;
+
+            this._cb("show zoom", $img);
+        }
+
+        return this;
+    };
+
+    /**
+     * Hide the Zoomed image
+     */
+    Closeup.prototype.hideZoomed = function () {
+
+        var supports = this.vars.supports;
+        var $img     = this.$zoomImage;
+
+        if ($img) {
+
+            if (supports.opacity) {
+                $img.style.opacity = "0";
+            } else {
+                $img.style.display = "none";
+            }
+
+            this.vars.zoomVisible = false;
+
+            this._cb("hide zoom", $img);
+        }
+
+        return this;
+    };
+
+
+    /**
+     * @param {string} src
+     * @param {function} [userCallback]
+     */
+    Closeup.prototype.setBaseImage = function (src, userCallback) {
+
+        this.vars.baseImageLoading = true;
+        this._cb("base image loading", src);
+
+        var that = this;
+
+        var cb = function () {
+
+            that.vars.baseImageLoading = false;
+            that.baseImg = new Subject(that.$baseImage);
+            that._updateMapping(that.$baseImage);
+
+            that._cb("base image loaded", that.$baseImage);
+
+            if (typeof userCallback === "function") {
+                userCallback(that.$baseImage);
+            }
+        };
+
+        // Fire callbacks if same src
+        if (this.$baseImage.src.indexOf(src) > -1) {
+            cb();
+        } else {
+            this.$baseImage.src = src;
+        }
+
+        this.$baseImage.onload = cb;
+
+        return this;
+    };
+
+    /**
+     * Set the zoom image - async
+     * @param {string} src
+     * @param {function} [userCallback]
+     */
+    Closeup.prototype.setZoomImage = function (src, userCallback) {
+
+
+        this.vars.imageLoading = true;
+
+        this._cb("zoom image loading", src);
+
+        var cb = this._onLoadCallback(userCallback);
+        if (!this.$zoomImage) {
+
+            // Fire callbacks if same src
+            this.$zoomImage = document.createElement("IMG");
+            this.$zoomImage.className = "zoom-image";
+            this.$zoomImage.src = src;
+            this.$zoomImage.style.cssText = STYLES.zoomImg.join(";");
+
+            this.$wrapper.appendChild(this.$zoomImage);
+        } else {
+
+            if (this.$zoomImage.src.indexOf(src) > 0) {
+                cb();
+            } else {
+                this.$zoomImage.src = src;
+            }
+        }
+
+
+        this.$zoomImage.onload = cb;
+        return this;
+    };
+
+
+    /**
+     * Helper for re-mapping values after a base image change/resize
+     */
+    Closeup.prototype.refresh = function () {
+
+        this._updateMapping(this.$baseImage);
+
+        return this;
     };
 
     /**
