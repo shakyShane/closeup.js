@@ -232,6 +232,8 @@
 
     var DEFAULTS = {
         hover: true,
+        showOnEnter: true,
+        hideOnExit: true,
         zoomVisible: false,
         hasZoomImage: false,
         imageLoading: false,
@@ -250,11 +252,12 @@
     var Closeup = function (wrapper, baseImg, opts, cb) {
 
         return this._addCallbacks(opts)
-                ._handleArguments(arguments)
-                ._initElements(wrapper, baseImg)
-                ._setVars()
-                ._setEvents(this.$wrapper)
-                ._setMapping(this.$baseImage);
+                   ._handleArguments(arguments)
+                   ._initElements(wrapper, baseImg)
+                   ._setVars()
+                   ._setSupports(this.vars, this.$wrapper)
+                   ._setMouseEvents(this.$wrapper)
+                   ._setMapping(this.$baseImage);
     };
 
 
@@ -263,19 +266,23 @@
      * Update the mapping so that the viewbox has the dimensions
      * from the base image
      *
-     * @param {HTMLElement} $elem
+     * @param {HTMLImageElement} $elem
      */
     Closeup.prototype._updateMapping = function ($elem) {
 
         this.mapper.viewBox.width  = $elem.width;
         this.mapper.viewBox.height = $elem.height;
+
+        this._cb("update mapping", this.mapper);
+
+        return this;
     };
 
     /**
      * Create an instance of Norman to interpolate
      * values between the viewbox & the subject
      *
-     * @param {HTMLElement} $elem
+     * @param {HTMLImageElement} $elem
      */
     Closeup.prototype._setMapping = function ($elem) {
 
@@ -293,7 +300,7 @@
     };
 
     /**
-     * Setup instance Vars
+     * Setup instance config using defaults merged with user config
      */
     Closeup.prototype._setVars = function () {
 
@@ -310,8 +317,6 @@
 
         this.baseImg = new Subject(this.$baseImage);
 
-        this._setSupports(this.vars, this.$wrapper);
-
         this._cb("set vars", this.vars);
 
         return this;
@@ -319,11 +324,17 @@
 
 
     /**
+     *
      * @param elem
      */
-    Closeup.prototype._setEvents = function (elem) {
+    Closeup.prototype._setMouseEvents = function (elem) {
 
         var that  = this;
+
+        if (!this.vars.hover) {
+            this._cb("not set mouse events");
+            return this;
+        }
 
         elem.addEventListener("mousemove", function (evt) {
 
@@ -351,7 +362,10 @@
             }
 
             that._cb("mouse enter", evt);
-            that.showZoomed();
+
+            if (that.showOnEnter) {
+                that.showZoomed();
+            }
 
         }, false);
 
@@ -363,18 +377,22 @@
             }
 
             that._cb("mouse leave", evt);
-            that.hideZoomed();
+
+            if (that.hideOnExit) {
+                that.hideZoomed();
+            }
 
         }, false);
 
-        this._cb("set events", this);
+        this._cb("set mouse events", this);
 
         return this;
     };
 
     /**
-     * @param x
-     * @param y
+     * Interpolate mouse position to obtain new position of subject
+     * @param {number} x
+     * @param {number} y
      */
     Closeup.prototype._updateMousePosition = function (x, y) {
 
@@ -387,7 +405,8 @@
     };
 
     /**
-     *
+     * Handle image loaded event
+     * @param {function} userCallback
      */
     Closeup.prototype._onLoadCallback = function (userCallback) {
 
@@ -529,6 +548,8 @@
         vars.supports["opacity"]         = typeof elem.style.opacity         !== "undefined";
         vars.supports["transform"]       = typeof elem.style.transform       !== "undefined";
         vars.supports["webkitTransform"] = typeof elem.style.webkitTransform !== "undefined";
+
+        return this;
     };
 
     /**
@@ -752,6 +773,7 @@
         this._cb("zoom image loading", src);
 
         var cb = this._onLoadCallback(userCallback);
+
         if (!this.$zoomImage) {
 
             // Fire callbacks if same src
@@ -761,11 +783,15 @@
             this.$zoomImage.style.cssText = STYLES.zoomImg.join(";");
 
             this.$wrapper.appendChild(this.$zoomImage);
+
         } else {
 
             if (this.$zoomImage.src.indexOf(src) > 0) {
+
                 cb();
+
             } else {
+
                 this.$zoomImage.src = src;
             }
         }
