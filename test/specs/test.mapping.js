@@ -16,7 +16,7 @@ test("Set Norman Mapping", function () {
 
     ok(zoomer.mapper);
 
-    zoomer.setMapping({clientWidth: 100, clientHeight: 100});
+    zoomer._setMapping({clientWidth: 100, clientHeight: 100});
 
     ok(zoomer.mapper.viewBox.width);
 });

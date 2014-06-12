@@ -277,10 +277,10 @@
      */
     var Closeup = function (wrapper, baseImg, opts, cb) {
 
-        return this.addCallbacks(opts)
-                .handleArguments(arguments)
-                .initElements(wrapper, baseImg)
-                .setMapping(this.$baseImage);
+        return this._addCallbacks(opts)
+                ._handleArguments(arguments)
+                ._initElements(wrapper, baseImg)
+                ._setMapping(this.$baseImage);
     };
 
 
@@ -291,7 +291,7 @@
      *
      * @param {HTMLElement} $elem
      */
-    Closeup.prototype.updateMapping = function ($elem) {
+    Closeup.prototype._updateMapping = function ($elem) {
 
         this.mapper.viewBox.width  = $elem.width;
         this.mapper.viewBox.height = $elem.height;
@@ -303,7 +303,7 @@
      *
      * @param {HTMLElement} $elem
      */
-    Closeup.prototype.setMapping = function ($elem) {
+    Closeup.prototype._setMapping = function ($elem) {
 
         this.mapper = new Norman({
             viewBox: {
@@ -313,7 +313,7 @@
             boundary: 50
         });
 
-        this.cb("set mapping", this.mapper);
+        this._cb("set mapping", this.mapper);
 
         return this;
     };
@@ -323,7 +323,7 @@
      */
     Closeup.prototype.refresh = function () {
 
-        this.updateMapping(this.$baseImage);
+        this._updateMapping(this.$baseImage);
 
         return this;
     };
@@ -331,7 +331,7 @@
     /**
      * Setup instance Vars
      */
-    Closeup.prototype.setVars = function () {
+    Closeup.prototype._setVars = function () {
 
         this.vars = {};
 
@@ -346,16 +346,16 @@
 
         this.baseImg = new Subject(this.$baseImage);
 
-        this.setSupports(this.vars, this.$wrapper);
+        this._setSupports(this.vars, this.$wrapper);
 
-        this.cb("set vars", this.vars);
+        this._cb("set vars", this.vars);
     };
 
 
     /**
      * @param elem
      */
-    Closeup.prototype.setEvents = function (elem) {
+    Closeup.prototype._setEvents = function (elem) {
 
         var that  = this;
 
@@ -372,8 +372,8 @@
             var mouseX = Math.abs(that.$baseImage.getBoundingClientRect().left - evt.clientX);
             var mouseY = Math.abs(that.$baseImage.getBoundingClientRect().top  - evt.clientY);
 
-            that.updateMousePosition(mouseX, mouseY);
-            that.cb("mouse move", [mouseX, mouseY]);
+            that._updateMousePosition(mouseX, mouseY);
+            that._cb("mouse move", [mouseX, mouseY]);
         });
 
         elem.addEventListener("mouseenter", function (evt) {
@@ -384,7 +384,7 @@
                 return;
             }
 
-            that.cb("mouse enter", evt);
+            that._cb("mouse enter", evt);
             that.showZoomed();
 
         }, false);
@@ -396,25 +396,25 @@
                 return;
             }
 
-            that.cb("mouse leave", evt);
+            that._cb("mouse leave", evt);
             that.hideZoomed();
 
         }, false);
 
-        this.cb("set events", this);
+        this._cb("set events", this);
     };
 
     /**
      * @param x
      * @param y
      */
-    Closeup.prototype.updateMousePosition = function (x, y) {
+    Closeup.prototype._updateMousePosition = function (x, y) {
 
         var newValues = this.mapper.map(x, y);
 
         if (newValues.inHitArea) {
 
-            this.updateElem(newValues.x, newValues.y);
+            this._updateElem(newValues.x, newValues.y);
         }
     };
 
@@ -436,7 +436,7 @@
 
             this.vars.zoomVisible = false;
 
-            this.cb("hide zoom", $img);
+            this._cb("hide zoom", $img);
         }
 
         return this;
@@ -461,7 +461,7 @@
 
             this.vars.zoomVisible = true;
 
-            this.cb("show zoom", $img);
+            this._cb("show zoom", $img);
         }
 
         return this;
@@ -476,9 +476,9 @@
 
         this.vars.imageLoading = true;
 
-        this.cb("zoom image loading", src);
+        this._cb("zoom image loading", src);
 
-        var cb = this.onLoadCallback(userCallback);
+        var cb = this._onLoadCallback(userCallback);
 
         if (!this.$zoomImage) {
 
@@ -510,7 +510,7 @@
     Closeup.prototype.setBaseImage = function (src, userCallback) {
 
         this.vars.baseImageLoading = true;
-        this.cb("base image loading", src);
+        this._cb("base image loading", src);
 
         var that = this;
 
@@ -518,9 +518,9 @@
 
             that.vars.baseImageLoading = false;
             that.baseImg = new Subject(that.$baseImage);
-            that.updateMapping(that.$baseImage);
+            that._updateMapping(that.$baseImage);
 
-            that.cb("base image loaded", that.$baseImage);
+            that._cb("base image loaded", that.$baseImage);
 
             if (typeof userCallback === "function") {
                 userCallback(that.$baseImage);
@@ -543,7 +543,7 @@
     /**
      *
      */
-    Closeup.prototype.onLoadCallback = function (userCallback) {
+    Closeup.prototype._onLoadCallback = function (userCallback) {
 
         var that     = this;
         var supports = this.vars.supports;
@@ -554,13 +554,13 @@
                 that.$zoomImage.style.display = "none";
             }
 
-            that.imageLoaded();
+            that._imageLoaded();
 
             window.setTimeout(function () {
 
                 that.vars.imageLoading = false;
 
-                that.cb("zoom image loaded", that.$zoomImage);
+                that._cb("zoom image loaded", that.$zoomImage);
 
                 if (typeof userCallback === "function") {
                     userCallback.call(that, that.$zoomImage);
@@ -574,7 +574,7 @@
     /**
      *
      */
-    Closeup.prototype.imageLoaded = function () {
+    Closeup.prototype._imageLoaded = function () {
 
         var $zoomImg = this.$zoomImage;
         var img      = this.zoomImg = new Subject($zoomImg);
@@ -583,12 +583,12 @@
         img.maxX     = -($zoomImg.width  - baseImg.width);
         img.maxY     = -($zoomImg.height - baseImg.height);
 
-        this.updateElem(img.maxX/2, img.maxY/2);
+        this._updateElem(img.maxX/2, img.maxY/2);
 
         if (!this.$zoomImage.hasTouchEvents) {
 
-            $zoomImg.addEventListener("touchstart", this.onTouchStart(this), false);
-            $zoomImg.addEventListener("touchmove",  this.onTouchMove(this),  false);
+            $zoomImg.addEventListener("touchstart", this._onTouchStart(this), false);
+            $zoomImg.addEventListener("touchmove",  this._onTouchMove(this),  false);
 
             this.$zoomImage.hasTouchEvents = true;
         }
@@ -603,7 +603,7 @@
      * @param {Closeup} instance
      * @returns {Function}
      */
-    Closeup.prototype.onTouchStart = function (instance) {
+    Closeup.prototype._onTouchStart = function (instance) {
 
         var that = instance;
 
@@ -631,7 +631,7 @@
      * @param {Closeup} instance
      * @returns {Function}
      */
-    Closeup.prototype.onTouchMove = function (instance) {
+    Closeup.prototype._onTouchMove = function (instance) {
 
         var that = instance;
 
@@ -670,7 +670,7 @@
                 }
             }
 
-            that.updateElem(newX, newY);
+            that._updateElem(newX, newY);
         };
     };
 
@@ -678,7 +678,7 @@
      * @param {Closeup.vars} vars
      * @param {HTMLElement} elem
      */
-    Closeup.prototype.setSupports = function (vars, elem) {
+    Closeup.prototype._setSupports = function (vars, elem) {
 
         vars.supports["opacity"]         = typeof elem.style.opacity         !== "undefined";
         vars.supports["transform"]       = typeof elem.style.transform       !== "undefined";
@@ -688,7 +688,7 @@
     /**
      * @param opts
      */
-    Closeup.prototype.addCallbacks = function (opts) {
+    Closeup.prototype._addCallbacks = function (opts) {
 
         this.callbacks = (opts && opts.callbacks) ? opts.callbacks : {};
 
@@ -698,7 +698,7 @@
     /**
      * @param args
      */
-    Closeup.prototype.handleArguments = function (args) {
+    Closeup.prototype._handleArguments = function (args) {
 
         switch(args.length) {
             case 2 :
@@ -724,7 +724,7 @@
      * @param {string} name
      * @param {*} data
      */
-    Closeup.prototype.cb = function (name, data) {
+    Closeup.prototype._cb = function (name, data) {
 
         if (typeof this.callbacks[name] === "function") {
             this.callbacks[name].call(this, data);
@@ -735,7 +735,7 @@
      * @param {string} wrapper
      * @param {string} baseImg
      */
-    Closeup.prototype.initElements = function (wrapper, baseImg) {
+    Closeup.prototype._initElements = function (wrapper, baseImg) {
 
         this.$wrapper = typeof wrapper === "string"
             ? document.querySelector(wrapper)
@@ -748,16 +748,16 @@
         }
 
         if (!this.$wrapper || !this.$baseImage) {
-            return this.cb("init", ERRORS["no elements"]);
+            return this._cb("init", ERRORS["no elements"]);
         }
 
         this.$wrapper.style.cssText = STYLES.wrapper.join(";");
         this.$baseImage.style.cssText = STYLES.baseImg.join(";");
 
-        this.cb("init", this);
+        this._cb("init", this);
 
-        this.setVars();
-        this.setEvents(this.$wrapper);
+        this._setVars();
+        this._setEvents(this.$wrapper);
 
         return this;
     };
@@ -766,17 +766,17 @@
      * @param {number} x
      * @param {number} y
      */
-    Closeup.prototype.updateElem = function (x, y) {
+    Closeup.prototype._updateElem = function (x, y) {
 
         x = Math.ceil(x);
         y = Math.ceil(y);
 
         var supports      = this.vars.supports;
-        var translateText = this.translateText(x, y);
+        var translateText = this._translateText(x, y);
 
         if (this.$zoomImage) {
 
-            this.cb("update zoom position", [x, y]);
+            this._cb("update zoom position", [x, y]);
 
             if (supports.webkitTransform) {
                 // Webkit + Blink
@@ -800,7 +800,7 @@
      * @param y
      * @returns {string}
      */
-    Closeup.prototype.translateText = function(x, y) {
+    Closeup.prototype._translateText = function(x, y) {
         var tmp = "translate3d(%xpx, %ypx, 0)";
         return tmp
             .replace("%x", x)
