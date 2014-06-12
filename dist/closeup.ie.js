@@ -260,7 +260,19 @@
         "no elements": "ERROR: The elements were not found"
     };
 
+    var DEFAULTS = {
+        hover: true,
+        zoomVisible: false,
+        hasZoomImage: false,
+        imageLoading: false,
+        baseImageLoading: false,
+        supports: {}
+    };
+
     /**
+     *
+     * Create and return an instance of Closeup.js
+     *
      * @constructor
      */
     var Closeup = function (wrapper, baseImg, opts, cb) {
@@ -273,15 +285,23 @@
 
 
     /**
-     * @param $elem
+     *
+     * Update the mapping so that the viewbox has the dimensions
+     * from the base image
+     *
+     * @param {HTMLElement} $elem
      */
     Closeup.prototype.updateMapping = function ($elem) {
+
         this.mapper.viewBox.width  = $elem.width;
         this.mapper.viewBox.height = $elem.height;
     };
 
     /**
+     * Create an instance of Norman to interpolate
+     * values between the viewbox & the subject
      *
+     * @param {HTMLElement} $elem
      */
     Closeup.prototype.setMapping = function ($elem) {
 
@@ -299,11 +319,13 @@
     };
 
     /**
-     * Update mapper size
+     * API method for re-mapping values after a base image change/resize
      */
     Closeup.prototype.refresh = function () {
-        this.mapper.viewBox.width  = this.$baseImage.width;
-        this.mapper.viewBox.height = this.$baseImage.height;
+
+        this.updateMapping(this.$baseImage);
+
+        return this;
     };
 
     /**
@@ -311,13 +333,16 @@
      */
     Closeup.prototype.setVars = function () {
 
-        this.vars = {
-            zoomVisible: false,
-            hasZoomImage: false,
-            imageLoading: false,
-            baseImageLoading: false,
-            supports: {}
-        };
+        this.vars = {};
+
+        for (var key in DEFAULTS) {
+            this.vars[key] = DEFAULTS[key];
+        }
+
+        for (var optKey in this.opts) {
+            this.vars[optKey] = this.opts[optKey];
+        }
+
 
         this.baseImg = new Subject(this.$baseImage);
 
@@ -413,6 +438,8 @@
 
             this.cb("hide zoom", $img);
         }
+
+        return this;
     };
 
 
@@ -436,9 +463,12 @@
 
             this.cb("show zoom", $img);
         }
+
+        return this;
     };
 
     /**
+     * Set the zoom image - async
      * @param {string} src
      * @param {function} [userCallback]
      */
@@ -533,7 +563,7 @@
                 that.cb("zoom image loaded", that.$zoomImage);
 
                 if (typeof userCallback === "function") {
-                    userCallback(that.$zoomImage);
+                    userCallback.call(that, that.$zoomImage);
                 }
 
             }, that.opts.loadDelay || 0);

@@ -34,20 +34,20 @@ test("Showing the zoom image with no opacity support", function () {
     ok(show instanceof Closeup);
 
 });
-
-asyncTest("Showing the zoom image with callback", function () {
-
-    var imgSrc = "base/fixtures/img/600.jpg";
-
-    expect(2);
-
-    new Closeup(wrapperClass, baseImgClass, {
-        callbacks: {
-            "show zoom": function () {
-                ok(1);
-            }
-        }
-    }).setZoomImage(imgSrc, function () {
-            this.showZoomed();
-    });
-});
+//
+//asyncTest("Showing the zoom image with callback", function () {
+//
+//    var imgSrc = "base/fixtures/img/600.jpg";
+//
+//    expect(2);
+//
+//    new Closeup(wrapperClass, baseImgClass, {
+//        callbacks: {
+//            "show zoom": function () {
+//                ok(1);
+//            }
+//        }
+//    }).setZoomImage(imgSrc, function () {
+//            this.showZoomed();
+//    });
+//});
