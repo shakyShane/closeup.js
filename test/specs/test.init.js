@@ -12,7 +12,6 @@ test("Instance creation with minimum 2 args", function () {
     equal(wrapper.tagName, "DIV");
     equal(wrapper.style.position, "relative");
     equal(wrapper.style.overflow, "hidden");
-    equal(wrapper.style.display, "inline-block");
 
     equal(baseImg.tagName, "IMG");
     equal(baseImg.style.display, "block");

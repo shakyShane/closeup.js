@@ -44,10 +44,12 @@ asyncTest("Loading a zoom image with callbacks", function () {
                 deepEqual(true, this.vars.imageLoading, "image loading var should be true");
                 equal(src, imgSrc);
             },
+            "update zoom position": function (coords) {
+                start();
+            },
             "zoom image loaded": function (elem) {
                 deepEqual(false, this.vars.imageLoading, "image loading var should now be false");
                 ok(elem.src.match(regex));
-                start();
             }
         }
     };
@@ -59,4 +61,5 @@ asyncTest("Loading a zoom image with callbacks", function () {
     ok(zoomer.$zoomImage);
     ok(zoomer.$zoomImage.tagName === "IMG");
     ok(zoomer.$zoomImage.src.match(regex));
+
 });

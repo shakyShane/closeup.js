@@ -3,6 +3,6 @@
 var conf = require("./test.conf");
 
 module.exports = function (config) {
-    conf.logLevel = config.LOG_DEBUG;
+    conf.logLevel = config.LOG_INFO;
     config.set(conf);
 };

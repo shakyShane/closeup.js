@@ -5,6 +5,7 @@ var concat     = require("gulp-concat");
 var rename     = require("gulp-rename");
 var browserify = require("gulp-browserify");
 
+
 var src = {
     lib: ["lib/index.js"]
 };
@@ -42,5 +43,11 @@ gulp.task('build', function () {
         .pipe(browserify())
         .pipe(gulp.dest("./dist"))
 });
+
+gulp.task('watch', function () {
+    gulp.watch(['test/specs/*.js', 'lib/*.js'], ['build-lib']);
+});
+
+gulp.task("dev", ['build-lib', 'watch']);
 
 gulp.task('build-all', ['build-lib', 'build-poly']);

@@ -92,18 +92,18 @@
     });
 
     require(['closeup'], function (Closeup) {
-//        console.log(Closeup);
 
         var config = {
             loadDelay: 0,
             callbacks: {},
-            hover: false
+            hover: true
         };
 
         var zoomer = window.zoomer = new Closeup(
                 document.querySelector("#zoom-window"),
                 document.querySelector(".base-image"), config)
                     .setZoomImage("img/1200.jpg");
+//                    .showZoomed();
     });
 </script>
 
