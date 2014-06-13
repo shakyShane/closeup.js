@@ -11,7 +11,14 @@ module.exports = {
     frameworks: ['qunit'],
 
     // list of files / patterns to load in the browser
-
+    files: [
+        '../dist/closeup.min.js',
+        'qunit-setup.js',
+        'fixtures/*.html',
+        'specs/*.js',
+        { pattern: 'fixtures/img/**', included: false, served: true },
+        'qunit-start.js'
+    ],
     // list of files to exclude
     exclude: [
 

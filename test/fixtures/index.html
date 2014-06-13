@@ -78,57 +78,33 @@
 
 <!--<script src="../../bower_components/jquery/dist/jquery.min.js"></script>-->
 <!--<script src="../../polyfills/addEventListener.js"></script>-->
-<script src="../../bower_components/norman.js/lib/norman.js"></script>
-<script src="../../lib/closeup.js"></script>
+<!--<script src="../../bower_components/norman.js/lib/norman.js"></script>-->
+<!--<script src="../../dist/index.js"></script>-->
 <!--<script src="../../dist/closeup.js"></script>-->
+
+<script src="../../bower_components/requirejs/require.js"></script>
 <script type="text/javascript">
-    var config = {
-        loadDelay: 0,
-        callbacks: {},
-        hover: false
-    };
-    var zoomer = new Closeup(
-            document.querySelector("#zoom-window"),
-            document.querySelector(".base-image"), config)
-                .setZoomImage("img/1200.jpg");
 
-//    zoomer.$wrapper.addEventListener("mouseenter", function () {
-//        if (!loaded) {
-//            zoomer.setZoomImage("img/600.jpg");
-//        }
-//    });
-//
-//    var zoomBtn = document.querySelector("#showZoomImage")
-//        .addEventListener("click", function () {
-//            zoomer.setBaseImage("img/600.jpg");
-//            zoomer.setZoomImage("img/1200.jpg");
-//        }, false);
-//    var button     = document.querySelector("#showZoomImage");
-//    var buttonHide = document.querySelector("#hideZoomImage");
-//
-//    button.addEventListener("touchstart", function (evt) {
-//        evt.preventDefault();
-//        zoomer.showZoomed();
-//    }, false);
-//
-//    buttonHide.addEventListener("touchstart", function (evt) {
-//        evt.preventDefault();
-//        zoomer.hideZoomed();
-//    }, false);
-//
-//    var buttons = document.querySelector(".switcher");
-//
-//    buttons.addEventListener("click", function (evt) {
-//        evt.preventDefault();
-//        var targetElem = evt.target;
-//        var src = targetElem.dataset.large;
-//        zoomer.setZoomImage(src);
-//    }, false);
+    require.config({
+       paths: {
+           "closeup": "../../dist/closeup.min"
+       }
+    });
 
-//    function debug(msg) {
-//        var debug = document.getElementById("debug");
-//        debug.innerHTML = msg;
-//    }
+    require(['closeup'], function (Closeup) {
+//        console.log(Closeup);
+
+        var config = {
+            loadDelay: 0,
+            callbacks: {},
+            hover: false
+        };
+
+        var zoomer = window.zoomer = new Closeup(
+                document.querySelector("#zoom-window"),
+                document.querySelector(".base-image"), config)
+                    .setZoomImage("img/1200.jpg");
+    });
 </script>
 
 </body>

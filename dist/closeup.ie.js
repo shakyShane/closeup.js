@@ -28,8 +28,7 @@
     }
 
 })(window, document);
-(function (window, undefined) {
-
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
     "use strict";
 
     /**
@@ -231,24 +230,9 @@
         return this;
     }
 
-
-    // AMD export
-    if(typeof define === "function" && define.amd) {
-        define(function() {
-            return Norman;
-        });
-        // commonjs export
-    } else if(typeof module !== "undefined" && module.exports) {
-        module.exports = Norman;
-        // browser export
-    } else {
-        window.Norman = Norman;
-    }
-
-})(window);
-(function (window, undefined) {
-
-    "use strict";
+    module.exports = Norman;
+},{}],2:[function(require,module,exports){
+var Norman = require("../bower_components/norman.js/lib/norman.js");
 
     var STYLES = {
         wrapper: ["position: relative", "overflow: hidden", "display: inline-block"],
@@ -859,17 +843,19 @@
         debug.innerHTML = msg;
     };
 
-    // AMD export
-    if(typeof define === "function" && define.amd) {
-        define(function() {
-            return Closeup;
-        });
-        // commonjs export
-    } else if(typeof module !== "undefined" && module.exports) {
-        module.exports = Closeup;
-        // browser export
-    } else {
-        window.Closeup = Closeup;
-    }
+    module.exports = Closeup;
 
-})(window, Norman);
+},{"../bower_components/norman.js/lib/norman.js":1}],3:[function(require,module,exports){
+var Closeup = require("./closeup");
+
+// AMD export
+
+if(typeof define === "function" && define.amd) {
+    define(function() {
+        return Closeup;
+    });
+    // commonjs export
+} else {
+    window.Closeup = Closeup;
+}
+},{"./closeup":2}]},{},[3])

@@ -5,7 +5,7 @@
         "dist/closeup.min.js"
     ],
     "devDependencies": {
-        "norman.js": "0.0.1"
+        "norman.js": "0.0.2"
     },
     "ignore": [
         "node_modules/",
