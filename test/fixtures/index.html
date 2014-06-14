@@ -12,6 +12,8 @@
 
         .wrapper {
             text-align: center;
+            display: inline-block;
+            position: relative;
         }
 
         .image {
@@ -57,19 +59,35 @@
             color: white;
             padding-top: 30px;
         }
+        .controls {
+            position: absolute;
+            height: 100%;
+            width: 50px;
+            background: rgba(255, 255, 255, .5);
+            display: block;
+            right: 0;
+            top: 0;
+            z-index: 100;
+        }
     </style>
 </head>
 <!--<body class="ie7">-->
 <body>
 <p id="debug">Debug</p>
 <div class="wrapper">
+
     <div class="image" id="zoom-window">
-        <img src="img/421.jpg" alt="" width="353" class="base-image" />
+        <img src="img/01-base.jpg" alt="" width="353" class="base-image" />
     </div>
 
+    <div class="controls">
+        <a href="#" id="next">Load next</a>
+    </div>
+
+
     <div class="switcher">
-        <!--<a href="img/421.jpg" data-large="img/600.jpg">Image 1</a>-->
-        <a href="img/421.jpg" data-large="img/1200.jpg">Image 2</a>
+        <!--<a href="img/01-base.jpg" data-large="img/600.jpg">Image 1</a>-->
+        <a href="img/01-base.jpg" data-large="img/1200.jpg">Image 2</a>
     </div>
 
     <button id="showZoomImage">Zoom</button>
@@ -95,17 +113,31 @@
 
         var config = {
             loadDelay: 0,
-            callbacks: {},
             showOnEnter: false,
+            toggleOnClick: true,
             hideOnExit: false,
-            hover: true
+            hover: true,
+            callbacks: {
+                "update zoom position": function () {
+//                    console.log("got here");
+                },
+                "mouse leave": function () {
+                    console.log("Mouse left the object");
+                },
+                "mouse enter": function () {
+                    console.log("Mouse Entered the object");
+                }
+            }
         };
 
-        var zoomer = window.zoomer = new Closeup(
-                document.querySelector("#zoom-window"),
-                document.querySelector(".base-image"), config)
-                    .setZoomImage("img/1200.jpg");
-//                    .showZoomed();
+        var $window = document.querySelector("#zoom-window");
+        var $base   = document.querySelector(".base-image");
+
+        var zoomer = window.zoomer = new Closeup($window, $base, config).setZoomImage("img/1200.jpg");
+        var link = document.querySelector("#next").addEventListener("click", function (evt) {
+            evt.preventDefault();
+            zoomer.setBaseImage("img/02-base.jpg");
+        });
     });
 </script>
 

@@ -378,7 +378,7 @@ Closeup.prototype._setMouseEvents = function (elem) {
  * @param {number} x
  * @param {number} y
  */
-Closeup.prototype._updateMousePosition = function (x, y) {
+Closeup.prototype._updateZoomPosition = function (x, y) {
 
     var newValues = this.mapper.map(x, y);
 
@@ -623,7 +623,7 @@ module.exports = function (elem, context) {
         var mouseX = Math.abs(that.$baseImage.getBoundingClientRect().left - evt.clientX);
         var mouseY = Math.abs(that.$baseImage.getBoundingClientRect().top  - evt.clientY);
 
-        that._updateMousePosition(mouseX, mouseY);
+        that._updateZoomPosition(mouseX, mouseY);
         that._cb("mouse move", [mouseX, mouseY]);
     });
 
@@ -807,7 +807,7 @@ module.exports = function (Closeup) {
      * @param {number} y
      */
     Closeup.prototype.setZoomPosition = function (x, y) {
-        this._updateMousePosition(x, y);
+        this._updateZoomPosition(x, y);
     };
 
 };

@@ -359,7 +359,7 @@ Closeup.prototype._setMouseEvents = function (elem) {
  * @param {number} x
  * @param {number} y
  */
-Closeup.prototype._updateMousePosition = function (x, y) {
+Closeup.prototype._updateZoomPosition = function (x, y) {
 
     var newValues = this.mapper.map(x, y);
 
@@ -405,9 +405,17 @@ Closeup.prototype._onLoadCallback = function (userCallback) {
  * @param type
  * @returns {Closeup}
  */
-Closeup.prototype._setZoom = function (type) {
+Closeup.prototype._setZoom = function (type, x, y) {
 
     var $img = this.$zoomImage;
+
+    if (x && y) {
+
+        var hitX = Math.abs(this.baseImg.x - x);
+        var hitY = Math.abs(this.baseImg.y  - y);
+
+        this._updateZoomPosition(hitX, hitY);
+    }
 
     if ($img) {
 
@@ -616,55 +624,103 @@ module.exports = function (elem, context) {
 
     var that = context;
 
-    elem.addEventListener("mousemove", function (evt) {
+    var entered = false;
+    var exited  = false;
 
-        if (!that.vars.canMove || that.vars.imageLoading || !that.$zoomImage) {
-            return;
-        } else {
-            if (that.vars.zoomVisible === false && that.vars.showOnEnter) {
-                that.showZoomed();
+    /**
+     * Click event on element if enabled in options
+     */
+    if (that.vars.toggleOnClick) {
+
+        elem.addEventListener("click", function (evt) {
+            evt.preventDefault();
+
+            if (!that.vars.zoomVisible) {
+                that._setZoom("show", evt.clientX, evt.clientY);
+                that.vars.canMove = true;
+            } else {
+                that._setZoom("hide");
+                that.vars.canMove = false;
             }
+
+        }, false);
+    }
+
+    /**
+     * Move event on body
+     */
+    document.body.addEventListener("mousemove", function (evt) {
+
+        var inX = false;
+        var inY = false;
+
+        var x = that.baseImg.x - evt.clientX;
+        var y = that.baseImg.y - evt.clientY;
+
+        if (x < 0 && x > -that.$baseImage.width) {
+            x = Math.abs(x);
+            inX = true;
+        }
+        if (y < 0 && y > -that.$baseImage.height) {
+            y = Math.abs(y);
+            inY = true;
         }
 
-        var mouseX = Math.abs(that.$baseImage.getBoundingClientRect().left - evt.clientX);
-        var mouseY = Math.abs(that.$baseImage.getBoundingClientRect().top  - evt.clientY);
+        if (inX && inY) {
+            mouseEnter(evt);
+            that._updateZoomPosition(x, y);
+            that._cb("mouse move", [x, y]);
+        } else {
+            mouseLeave(evt);
+        }
 
-        that._updateMousePosition(mouseX, mouseY);
-        that._cb("mouse move", [mouseX, mouseY]);
     });
 
-    elem.addEventListener("mouseenter", function (evt) {
+    function mouseEnter(evt) {
 
-        evt.preventDefault();
 
-        if (that.vars.imageLoading) {
-            return;
+        if (!entered) {
+
+            if (that.vars.imageLoading) {
+                return;
+            }
+
+            that._cb("mouse enter", evt);
+
+            if (that.vars.showOnEnter) {
+                that.showZoomed();
+                that.vars.canMove = true;
+            } else {
+                if (!that.vars.toggleOnClick) {
+                    that.vars.canMove = false;
+                }
+            }
+
+            entered = true;
         }
+    }
 
-        that._cb("mouse enter", evt);
+    function mouseLeave(evt) {
 
-        if (that.vars.showOnEnter) {
-            that.showZoomed();
-            that.vars.canMove = true;
-        }
-
-    }, false);
-
-    elem.addEventListener("mouseleave", function (evt) {
-        evt.preventDefault();
-
-        if (that.vars.imageLoading) {
+        // Can't leave if never entered
+        if (!entered) {
             return;
+        } else {
+            exited = true;
         }
 
         that._cb("mouse leave", evt);
 
-        if (that.vars.hideOnExit) {
-            that.hideZoomed();
-            that.vars.canMove = false;
-        }
+        entered = false;
 
-    }, false);
+        if (that.vars.zoomVisible) {
+            if (that.vars.hideOnExit) {
+                that.hideZoomed();
+                that.vars.canMove = false;
+            }
+        }
+    }
+
 };
 },{}],5:[function(require,module,exports){
 var Subject = require("./subject");
@@ -676,11 +732,13 @@ var Subject = require("./subject");
 module.exports = function (Closeup) {
 
     /**
-     * Show the Zoomed image
+     * @param x
+     * @param y
+     * @returns {Closeup}
      */
-    Closeup.prototype.showZoomed = function () {
+    Closeup.prototype.showZoomed = function (x, y) {
 
-        return this._setZoom("show");
+        return this._setZoom("show", x, y);
     };
 
     /**
@@ -786,7 +844,7 @@ module.exports = function (Closeup) {
      */
     Closeup.prototype.setZoomPosition = function (x, y) {
 
-        this._updateMousePosition(x, y);
+        this._updateZoomPosition(x, y);
 
         return this;
     };

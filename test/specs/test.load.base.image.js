@@ -12,7 +12,7 @@ asyncTest("Loading a new base image with immediate callback", function () {
         myNode.removeChild(myNode.firstChild);
     }
 
-    var imgSrc = "base/fixtures/img/base2.jpg";
+    var imgSrc = "base/fixtures/img/02-base.jpg";
     var regex  = new RegExp(imgSrc);
     var zoomer = new Closeup(wrapperClass, baseImgClass);
 
