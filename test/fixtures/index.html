@@ -87,7 +87,7 @@
 
     require.config({
        paths: {
-           "closeup": "../../dist/closeup.min"
+           "closeup": "../../dist/closeup"
        }
     });
 
@@ -96,6 +96,8 @@
         var config = {
             loadDelay: 0,
             callbacks: {},
+            showOnEnter: false,
+            hideOnExit: false,
             hover: true
         };
 

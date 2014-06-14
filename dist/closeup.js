@@ -225,13 +225,27 @@ var DEFAULTS = {
     baseImageLoading: false,
     baseImageDelay: 0,
     zoomImageDelay: 0,
-    canMove: false,
+    canMove: true,
     boundary: 50,
     startPos: function (maxX, maxY) {
         return {
             x: maxX/2,
             y: maxY/2
         };
+    },
+    showZoomed: function ($img) {
+        if (this.vars.supports.opacity) {
+            $img.style.opacity = "1";
+        } else {
+            $img.style.display = "block";
+        }
+    },
+    hideZoomed: function ($img) {
+        if (this.vars.supports.opacity) {
+            $img.style.opacity = "0";
+        } else {
+            $img.style.display = "none";
+        }
     },
     supports: {}
 };
@@ -260,24 +274,6 @@ var Closeup = function (wrapper, baseImg, opts, cb) {
         ._setMapping(this.$baseImage);
 };
 
-
-/**
- *
- * Update the mapping so that the viewbox has the dimensions
- * from the base image
- *
- * @param {HTMLImageElement} $elem
- */
-Closeup.prototype._updateMapping = function ($elem) {
-
-    this.mapper.viewBox.width = $elem.width;
-    this.mapper.viewBox.height = $elem.height;
-
-    this._cb("update mapping", this.mapper);
-
-    return this;
-};
-
 /**
  * Create an instance of Norman to interpolate
  * values between the viewbox & the subject
@@ -299,6 +295,24 @@ Closeup.prototype._setMapping = function ($elem) {
     return this;
 };
 
+
+/**
+ *
+ * Update the mapping so that the viewbox has the dimensions
+ * from the base image
+ *
+ * @param {HTMLImageElement} $elem
+ */
+Closeup.prototype._updateMapping = function ($elem) {
+
+    this.mapper.viewBox.width = $elem.width;
+    this.mapper.viewBox.height = $elem.height;
+
+    this._cb("update mapping", this.mapper);
+
+    return this;
+};
+
 /**
  * Setup instance config using defaults merged with user config
  */
@@ -314,7 +328,6 @@ Closeup.prototype._setVars = function () {
         this.vars[optKey] = this.opts[optKey];
     }
 
-
     this.baseImg = new Subject(this.$baseImage);
 
     this._cb("set vars", this.vars);
@@ -328,8 +341,6 @@ Closeup.prototype._setVars = function () {
  * @param elem
  */
 Closeup.prototype._setMouseEvents = function (elem) {
-
-    var that = this;
 
     if (!this.vars.hover) {
         this._cb("not set mouse events");
@@ -389,6 +400,26 @@ Closeup.prototype._onLoadCallback = function (userCallback) {
     };
 };
 
+/**
+ * Set the zoom state
+ * @param type
+ * @returns {Closeup}
+ */
+Closeup.prototype._setZoom = function (type) {
+
+    var $img = this.$zoomImage;
+
+    if ($img) {
+
+        this.vars[type + "Zoomed"].call(this, $img);
+
+        this.vars.zoomVisible = type === "show";
+
+        this._cb(type + " zoom", $img);
+    }
+
+    return this;
+};
 
 /**
  *
@@ -396,8 +427,8 @@ Closeup.prototype._onLoadCallback = function (userCallback) {
 Closeup.prototype._imageLoaded = function () {
 
     var $zoomImg = this.$zoomImage;
-    var img = this.zoomImg = new Subject($zoomImg);
-    var baseImg = this.baseImg;
+    var img      = this.zoomImg = new Subject($zoomImg);
+    var baseImg  = this.baseImg;
 
     img.maxX = -($zoomImg.width - baseImg.width);
     img.maxY = -($zoomImg.height - baseImg.height);
@@ -425,8 +456,8 @@ Closeup.prototype._imageLoaded = function () {
  */
 Closeup.prototype._setSupports = function (vars, elem) {
 
-    vars.supports["opacity"] = typeof elem.style.opacity !== "undefined";
-    vars.supports["transform"] = typeof elem.style.transform !== "undefined";
+    vars.supports["opacity"]         = typeof elem.style.opacity         !== "undefined";
+    vars.supports["transform"]       = typeof elem.style.transform       !== "undefined";
     vars.supports["webkitTransform"] = typeof elem.style.webkitTransform !== "undefined";
 
     return this;
@@ -498,7 +529,7 @@ Closeup.prototype._initElements = function (wrapper, baseImg) {
         return this._cb("init", ERRORS["no elements"]);
     }
 
-    this.$wrapper.style.cssText = STYLES.wrapper.join(";");
+    this.$wrapper.style.cssText   = STYLES.wrapper.join(";");
     this.$baseImage.style.cssText = STYLES.baseImg.join(";");
 
     this._cb("init", this);
@@ -515,7 +546,12 @@ Closeup.prototype._updateElem = function (x, y) {
     x = Math.ceil(x);
     y = Math.ceil(y);
 
-    var supports = this.vars.supports;
+    if (this.zoomImg) {
+        this.zoomImg.x = x;
+        this.zoomImg.y = y;
+    }
+
+    var supports      = this.vars.supports;
     var translateText = this._translateText(x, y);
 
     if (this.$zoomImage) {
@@ -585,7 +621,7 @@ module.exports = function (elem, context) {
         if (!that.vars.canMove || that.vars.imageLoading || !that.$zoomImage) {
             return;
         } else {
-            if (that.vars.zoomVisible === false) {
+            if (that.vars.zoomVisible === false && that.vars.showOnEnter) {
                 that.showZoomed();
             }
         }
@@ -607,7 +643,7 @@ module.exports = function (elem, context) {
 
         that._cb("mouse enter", evt);
 
-        if (that.showOnEnter) {
+        if (that.vars.showOnEnter) {
             that.showZoomed();
             that.vars.canMove = true;
         }
@@ -623,7 +659,7 @@ module.exports = function (elem, context) {
 
         that._cb("mouse leave", evt);
 
-        if (that.hideOnExit) {
+        if (that.vars.hideOnExit) {
             that.hideZoomed();
             that.vars.canMove = false;
         }
@@ -633,6 +669,10 @@ module.exports = function (elem, context) {
 },{}],5:[function(require,module,exports){
 var Subject = require("./subject");
 
+/**
+ * Add public methods to the prototype
+ * @param Closeup
+ */
 module.exports = function (Closeup) {
 
     /**
@@ -640,23 +680,7 @@ module.exports = function (Closeup) {
      */
     Closeup.prototype.showZoomed = function () {
 
-        var supports = this.vars.supports;
-        var $img     = this.$zoomImage;
-
-        if ($img) {
-
-            if (supports.opacity) {
-                $img.style.opacity = "1";
-            } else {
-                $img.style.display = "block";
-            }
-
-            this.vars.zoomVisible = true;
-
-            this._cb("show zoom", $img);
-        }
-
-        return this;
+        return this._setZoom("show");
     };
 
     /**
@@ -664,25 +688,8 @@ module.exports = function (Closeup) {
      */
     Closeup.prototype.hideZoomed = function () {
 
-        var supports = this.vars.supports;
-        var $img     = this.$zoomImage;
-
-        if ($img) {
-
-            if (supports.opacity) {
-                $img.style.opacity = "0";
-            } else {
-                $img.style.display = "none";
-            }
-
-            this.vars.zoomVisible = false;
-
-            this._cb("hide zoom", $img);
-        }
-
-        return this;
+        return this._setZoom("hide");
     };
-
 
     /**
      * @param {string} src
@@ -758,6 +765,7 @@ module.exports = function (Closeup) {
 
 
         this.$zoomImage.onload = cb;
+
         return this;
     };
 
@@ -777,7 +785,10 @@ module.exports = function (Closeup) {
      * @param {number} y
      */
     Closeup.prototype.setZoomPosition = function (x, y) {
+
         this._updateMousePosition(x, y);
+
+        return this;
     };
 
 };
