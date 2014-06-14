@@ -858,12 +858,14 @@ module.exports = function (Closeup) {
             }
         };
 
-        // Fire callbacks if same src
-        if (this.$baseImage.src.indexOf(src) > -1) {
-            cb();
-        } else {
-            this.$baseImage.src = src;
-        }
+        window.setTimeout(function () {
+            // Fire callbacks if same src
+            if (that.$baseImage.src.indexOf(src) > -1) {
+                cb();
+            } else {
+                that.$baseImage.src = src;
+            }
+        }, this.vars.baseImageDelay);
 
         this.$baseImage.onload = cb;
 
@@ -877,8 +879,9 @@ module.exports = function (Closeup) {
      */
     Closeup.prototype.setZoomImage = function (src, userCallback) {
 
-
         this.vars.imageLoading = true;
+        var setSrc = false;
+        var that = this;
 
         this._cb("zoom image loading", src);
 
@@ -889,7 +892,9 @@ module.exports = function (Closeup) {
             // Fire callbacks if same src
             this.$zoomImage = document.createElement("IMG");
             this.$zoomImage.className = this.vars.zoomClass;
-            this.$zoomImage.src = src;
+
+            setSrc = true;
+
             this.$zoomImage.style.cssText = this.const.STYLES.zoomImg.join(";");
 
             this.$wrapper.appendChild(this.$zoomImage);
@@ -898,12 +903,20 @@ module.exports = function (Closeup) {
 
             if (this.$zoomImage.src.indexOf(src) > 0) {
 
-                cb();
+                window.setTimeout(function () {
+                    cb();
+                }, this.vars.zoomImageDelay);
 
             } else {
-
-                this.$zoomImage.src = src;
+                setSrc = true;
             }
+        }
+
+
+        if (setSrc) {
+            window.setTimeout(function () {
+                that.$zoomImage.src = src;
+            }, this.vars.zoomImageDelay);
         }
 
 

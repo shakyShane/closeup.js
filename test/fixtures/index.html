@@ -117,8 +117,22 @@
             toggleOnClick: true,
             hideOnExit: false,
             mouseEvents: true,
-            ignoreOverlays: true,
+            baseImageDelay: 3000,
+            zoomImageDelay: 3000,
+//            ignoreOverlays: true,
             callbacks: {
+                "zoom image loading": function () {
+                    console.log("Zoom image loading");
+                },
+                "zoom image loaded": function () {
+                    console.log("Zoom image loaded");
+                },
+                "base image loading": function () {
+                    console.log("Base image loading");
+                },
+                "base image loaded": function () {
+                    console.log("Base image loaded");
+                },
                 "update zoom position": function () {
 //                    console.log("got here");
                 },
@@ -134,10 +148,10 @@
         var $window = document.querySelector("#zoom-window");
         var $base   = document.querySelector(".base-image");
 
-        var zoomer = window.zoomer = new Closeup($window, $base, config).setZoomImage("img/1200.jpg");
+        var zoomer = window.zoomer = new Closeup($window, $base, config);
         var link = document.querySelector("#next").addEventListener("click", function (evt) {
             evt.preventDefault();
-            zoomer.setBaseImage("img/02-base.jpg");
+            zoomer.setZoomImage("img/1200.jpg");
         });
     });
 </script>
