@@ -1,6 +1,6 @@
 {
     "name": "closeup.js",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "main": [
         "dist/closeup.min.js"
     ],
@@ -16,6 +16,7 @@
         ".jshintrc",
         "gulpfile.js",
         ".npmignore",
-        "package.json"
+        "package.json",
+        "tmp"
     ]
 }

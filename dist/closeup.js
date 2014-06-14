@@ -217,7 +217,9 @@ var ERRORS = {
 
 var DEFAULTS = {
     hover: true,
+    mouseEvents: true,
     showOnEnter: true,
+    touchEvents: true,
     hideOnExit: true,
     zoomVisible: false,
     hasZoomImage: false,
@@ -226,7 +228,9 @@ var DEFAULTS = {
     baseImageDelay: 0,
     zoomImageDelay: 0,
     canMove: true,
+    zoomClass: "zoom-image",
     boundary: 50,
+    ignoreOverlays: false,
     startPos: function (maxX, maxY) {
         return {
             x: maxX/2,
@@ -342,15 +346,14 @@ Closeup.prototype._setVars = function () {
  */
 Closeup.prototype._setMouseEvents = function (elem) {
 
-    if (!this.vars.hover) {
+    if (!this.vars.mouseEvents) {
         this._cb("not set mouse events");
         return this;
     }
-
+    /** stripifnot:mouse **/
     require("./mouse.events")(elem, this);
-
     this._cb("set mouse events", this);
-
+    /** stripifnot:mouse:end **/
     return this;
 };
 
@@ -445,12 +448,14 @@ Closeup.prototype._imageLoaded = function () {
 
     this._updateElem(startPos.x, startPos.y);
 
-    if (!this.$zoomImage.hasTouchEvents) {
+    /**stripifnot:touch**/
+    if (!this.$zoomImage.hasTouchEvents && this.vars.touchEvents) {
 
         require("./touch.events")($zoomImg, this);
 
         this.$zoomImage.hasTouchEvents = true;
     }
+    /**stripifnot:touch:end**/
 
     this.mapper.mapTo({
         height: $zoomImg.height,
@@ -622,8 +627,7 @@ if(typeof define === "function" && define.amd) {
  */
 module.exports = function (elem, context) {
 
-    var that = context;
-
+    var that    = context;
     var entered = false;
     var exited  = false;
 
@@ -631,53 +635,59 @@ module.exports = function (elem, context) {
      * Click event on element if enabled in options
      */
     if (that.vars.toggleOnClick) {
-
-        elem.addEventListener("click", function (evt) {
-            evt.preventDefault();
-
-            if (!that.vars.zoomVisible) {
-                that._setZoom("show", evt.clientX, evt.clientY);
-                that.vars.canMove = true;
-            } else {
-                that._setZoom("hide");
-                that.vars.canMove = false;
-            }
-
-        }, false);
+        document.body.addEventListener("click", clickEvent, false);
     }
 
     /**
      * Move event on body
      */
-    document.body.addEventListener("mousemove", function (evt) {
+    document.body.addEventListener("mousemove", mouseMove);
 
-        var inX = false;
-        var inY = false;
+    /**
+     * Mouse move event
+     * @param evt
+     */
+    function mouseMove (evt) {
 
-        var x = that.baseImg.x - evt.clientX;
-        var y = that.baseImg.y - evt.clientY;
+        var coords = inHitArea(evt.clientX, evt.clientY);
 
-        if (x < 0 && x > -that.$baseImage.width) {
-            x = Math.abs(x);
-            inX = true;
-        }
-        if (y < 0 && y > -that.$baseImage.height) {
-            y = Math.abs(y);
-            inY = true;
-        }
-
-        if (inX && inY) {
+        if (coords && (hitElement(evt) || that.vars.ignoreOverlays)) {
             mouseEnter(evt);
-            that._updateZoomPosition(x, y);
-            that._cb("mouse move", [x, y]);
+            that._updateZoomPosition(coords.x, coords.y);
+            that._cb("mouse move", coords);
         } else {
             mouseLeave(evt);
         }
+    }
 
-    });
+    /**
+     * Click Event
+     * @param evt
+     */
+    function clickEvent (evt) {
 
+        evt.preventDefault();
+
+        if (inHitArea(evt.clientX, evt.clientY)) {
+
+            if (hitElement(evt) || that.vars.ignoreOverlays) {
+
+                if (!that.vars.zoomVisible) {
+                    that._setZoom("show", evt.clientX, evt.clientY);
+                    that.vars.canMove = true;
+                } else {
+                    that._setZoom("hide");
+                    that.vars.canMove = false;
+                }
+            }
+        }
+    }
+
+    /**
+     * Mouse enter
+     * @param evt
+     */
     function mouseEnter(evt) {
-
 
         if (!entered) {
 
@@ -700,6 +710,10 @@ module.exports = function (elem, context) {
         }
     }
 
+    /**
+     * Mouse Leave
+     * @param evt
+     */
     function mouseLeave(evt) {
 
         // Can't leave if never entered
@@ -719,6 +733,47 @@ module.exports = function (elem, context) {
                 that.vars.canMove = false;
             }
         }
+    }
+
+    /**
+     * Helper for body event
+     * @param clientX
+     * @param clientY
+     * @returns {*}
+     */
+    function inHitArea(clientX, clientY) {
+
+        var inX = false;
+        var inY = false;
+
+        var x = that.baseImg.x - clientX;
+        var y = that.baseImg.y - clientY;
+
+        if (x < 0 && x > -that.$baseImage.width) {
+            x = Math.abs(x);
+            inX = true;
+        }
+        if (y < 0 && y > -that.$baseImage.height) {
+            y = Math.abs(y);
+            inY = true;
+        }
+
+        if (inX && inY) {
+            return {
+                x: x,
+                y: y
+            };
+        }
+
+        return false;
+    }
+
+    /**
+     * @param evt
+     * @returns {boolean|*}
+     */
+    function hitElement(evt) {
+        return evt.target.tagName === "IMG" && (evt.target.className.match(new RegExp(that.vars.zoomClass)));
     }
 
 };
@@ -803,7 +858,7 @@ module.exports = function (Closeup) {
 
             // Fire callbacks if same src
             this.$zoomImage = document.createElement("IMG");
-            this.$zoomImage.className = "zoom-image";
+            this.$zoomImage.className = this.vars.zoomClass;
             this.$zoomImage.src = src;
             this.$zoomImage.style.cssText = this.const.STYLES.zoomImg.join(";");
 

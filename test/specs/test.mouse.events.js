@@ -13,7 +13,7 @@ asyncTest("Not setting the mouse events", function () {
                 start();
             }
         },
-        hover: false
+        mouseEvents: false
     });
 });
 

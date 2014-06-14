@@ -247,7 +247,9 @@ var ERRORS = {
 
 var DEFAULTS = {
     hover: true,
+    mouseEvents: true,
     showOnEnter: true,
+    touchEvents: true,
     hideOnExit: true,
     zoomVisible: false,
     hasZoomImage: false,
@@ -255,13 +257,29 @@ var DEFAULTS = {
     baseImageLoading: false,
     baseImageDelay: 0,
     zoomImageDelay: 0,
-    canMove: false,
+    canMove: true,
+    zoomClass: "zoom-image",
     boundary: 50,
+    ignoreOverlays: false,
     startPos: function (maxX, maxY) {
         return {
             x: maxX/2,
             y: maxY/2
         };
+    },
+    showZoomed: function ($img) {
+        if (this.vars.supports.opacity) {
+            $img.style.opacity = "1";
+        } else {
+            $img.style.display = "block";
+        }
+    },
+    hideZoomed: function ($img) {
+        if (this.vars.supports.opacity) {
+            $img.style.opacity = "0";
+        } else {
+            $img.style.display = "none";
+        }
     },
     supports: {}
 };
@@ -290,24 +308,6 @@ var Closeup = function (wrapper, baseImg, opts, cb) {
         ._setMapping(this.$baseImage);
 };
 
-
-/**
- *
- * Update the mapping so that the viewbox has the dimensions
- * from the base image
- *
- * @param {HTMLImageElement} $elem
- */
-Closeup.prototype._updateMapping = function ($elem) {
-
-    this.mapper.viewBox.width = $elem.width;
-    this.mapper.viewBox.height = $elem.height;
-
-    this._cb("update mapping", this.mapper);
-
-    return this;
-};
-
 /**
  * Create an instance of Norman to interpolate
  * values between the viewbox & the subject
@@ -329,6 +329,24 @@ Closeup.prototype._setMapping = function ($elem) {
     return this;
 };
 
+
+/**
+ *
+ * Update the mapping so that the viewbox has the dimensions
+ * from the base image
+ *
+ * @param {HTMLImageElement} $elem
+ */
+Closeup.prototype._updateMapping = function ($elem) {
+
+    this.mapper.viewBox.width = $elem.width;
+    this.mapper.viewBox.height = $elem.height;
+
+    this._cb("update mapping", this.mapper);
+
+    return this;
+};
+
 /**
  * Setup instance config using defaults merged with user config
  */
@@ -344,7 +362,6 @@ Closeup.prototype._setVars = function () {
         this.vars[optKey] = this.opts[optKey];
     }
 
-
     this.baseImg = new Subject(this.$baseImage);
 
     this._cb("set vars", this.vars);
@@ -359,17 +376,11 @@ Closeup.prototype._setVars = function () {
  */
 Closeup.prototype._setMouseEvents = function (elem) {
 
-    var that = this;
-
-    if (!this.vars.hover) {
+    if (!this.vars.mouseEvents) {
         this._cb("not set mouse events");
         return this;
     }
-
-    require("./mouse.events")(elem, this);
-
-    this._cb("set mouse events", this);
-
+    
     return this;
 };
 
@@ -419,6 +430,34 @@ Closeup.prototype._onLoadCallback = function (userCallback) {
     };
 };
 
+/**
+ * Set the zoom state
+ * @param type
+ * @returns {Closeup}
+ */
+Closeup.prototype._setZoom = function (type, x, y) {
+
+    var $img = this.$zoomImage;
+
+    if (x && y) {
+
+        var hitX = Math.abs(this.baseImg.x - x);
+        var hitY = Math.abs(this.baseImg.y  - y);
+
+        this._updateZoomPosition(hitX, hitY);
+    }
+
+    if ($img) {
+
+        this.vars[type + "Zoomed"].call(this, $img);
+
+        this.vars.zoomVisible = type === "show";
+
+        this._cb(type + " zoom", $img);
+    }
+
+    return this;
+};
 
 /**
  *
@@ -426,8 +465,8 @@ Closeup.prototype._onLoadCallback = function (userCallback) {
 Closeup.prototype._imageLoaded = function () {
 
     var $zoomImg = this.$zoomImage;
-    var img = this.zoomImg = new Subject($zoomImg);
-    var baseImg = this.baseImg;
+    var img      = this.zoomImg = new Subject($zoomImg);
+    var baseImg  = this.baseImg;
 
     img.maxX = -($zoomImg.width - baseImg.width);
     img.maxY = -($zoomImg.height - baseImg.height);
@@ -436,12 +475,7 @@ Closeup.prototype._imageLoaded = function () {
 
     this._updateElem(startPos.x, startPos.y);
 
-    if (!this.$zoomImage.hasTouchEvents) {
-
-        require("./touch.events")($zoomImg, this);
-
-        this.$zoomImage.hasTouchEvents = true;
-    }
+    
 
     this.mapper.mapTo({
         height: $zoomImg.height,
@@ -455,8 +489,8 @@ Closeup.prototype._imageLoaded = function () {
  */
 Closeup.prototype._setSupports = function (vars, elem) {
 
-    vars.supports["opacity"] = typeof elem.style.opacity !== "undefined";
-    vars.supports["transform"] = typeof elem.style.transform !== "undefined";
+    vars.supports["opacity"]         = typeof elem.style.opacity         !== "undefined";
+    vars.supports["transform"]       = typeof elem.style.transform       !== "undefined";
     vars.supports["webkitTransform"] = typeof elem.style.webkitTransform !== "undefined";
 
     return this;
@@ -528,7 +562,7 @@ Closeup.prototype._initElements = function (wrapper, baseImg) {
         return this._cb("init", ERRORS["no elements"]);
     }
 
-    this.$wrapper.style.cssText = STYLES.wrapper.join(";");
+    this.$wrapper.style.cssText   = STYLES.wrapper.join(";");
     this.$baseImage.style.cssText = STYLES.baseImg.join(";");
 
     this._cb("init", this);
@@ -545,7 +579,12 @@ Closeup.prototype._updateElem = function (x, y) {
     x = Math.ceil(x);
     y = Math.ceil(y);
 
-    var supports = this.vars.supports;
+    if (this.zoomImg) {
+        this.zoomImg.x = x;
+        this.zoomImg.y = y;
+    }
+
+    var supports      = this.vars.supports;
     var translateText = this._translateText(x, y);
 
     if (this.$zoomImage) {
@@ -588,7 +627,7 @@ require("./public")(Closeup);
 
 module.exports = Closeup;
 
-},{"../bower_components/norman.js/lib/norman.js":1,"./mouse.events":4,"./public":5,"./subject":6,"./touch.events":7}],3:[function(require,module,exports){
+},{"../bower_components/norman.js/lib/norman.js":1,"./public":4,"./subject":5}],3:[function(require,module,exports){
 var Closeup = require("./closeup");
 
 // AMD export
@@ -601,92 +640,22 @@ if(typeof define === "function" && define.amd) {
     window.Closeup = Closeup;
 }
 },{"./closeup":2}],4:[function(require,module,exports){
-/**
- * Mouse Events
- * @param elem
- * @param context
- */
-module.exports = function (elem, context) {
-
-    var that = context;
-
-    elem.addEventListener("mousemove", function (evt) {
-
-        if (!that.vars.canMove || that.vars.imageLoading || !that.$zoomImage) {
-            return;
-        } else {
-            if (that.vars.zoomVisible === false) {
-                that.showZoomed();
-            }
-        }
-
-        var mouseX = Math.abs(that.$baseImage.getBoundingClientRect().left - evt.clientX);
-        var mouseY = Math.abs(that.$baseImage.getBoundingClientRect().top  - evt.clientY);
-
-        that._updateZoomPosition(mouseX, mouseY);
-        that._cb("mouse move", [mouseX, mouseY]);
-    });
-
-    elem.addEventListener("mouseenter", function (evt) {
-
-        evt.preventDefault();
-
-        if (that.vars.imageLoading) {
-            return;
-        }
-
-        that._cb("mouse enter", evt);
-
-        if (that.showOnEnter) {
-            that.showZoomed();
-            that.vars.canMove = true;
-        }
-
-    }, false);
-
-    elem.addEventListener("mouseleave", function (evt) {
-        evt.preventDefault();
-
-        if (that.vars.imageLoading) {
-            return;
-        }
-
-        that._cb("mouse leave", evt);
-
-        if (that.hideOnExit) {
-            that.hideZoomed();
-            that.vars.canMove = false;
-        }
-
-    }, false);
-};
-},{}],5:[function(require,module,exports){
 var Subject = require("./subject");
 
+/**
+ * Add public methods to the prototype
+ * @param Closeup
+ */
 module.exports = function (Closeup) {
 
     /**
-     * Show the Zoomed image
+     * @param x
+     * @param y
+     * @returns {Closeup}
      */
-    Closeup.prototype.showZoomed = function () {
+    Closeup.prototype.showZoomed = function (x, y) {
 
-        var supports = this.vars.supports;
-        var $img     = this.$zoomImage;
-
-        if ($img) {
-
-            if (supports.opacity) {
-                $img.style.opacity = "1";
-            } else {
-                $img.style.display = "block";
-            }
-
-            this.vars.zoomVisible = true;
-
-            this._cb("show zoom", $img);
-        }
-
-        return this;
+        return this._setZoom("show", x, y);
     };
 
     /**
@@ -694,25 +663,8 @@ module.exports = function (Closeup) {
      */
     Closeup.prototype.hideZoomed = function () {
 
-        var supports = this.vars.supports;
-        var $img     = this.$zoomImage;
-
-        if ($img) {
-
-            if (supports.opacity) {
-                $img.style.opacity = "0";
-            } else {
-                $img.style.display = "none";
-            }
-
-            this.vars.zoomVisible = false;
-
-            this._cb("hide zoom", $img);
-        }
-
-        return this;
+        return this._setZoom("hide");
     };
-
 
     /**
      * @param {string} src
@@ -768,7 +720,7 @@ module.exports = function (Closeup) {
 
             // Fire callbacks if same src
             this.$zoomImage = document.createElement("IMG");
-            this.$zoomImage.className = "zoom-image";
+            this.$zoomImage.className = this.vars.zoomClass;
             this.$zoomImage.src = src;
             this.$zoomImage.style.cssText = this.const.STYLES.zoomImg.join(";");
 
@@ -788,6 +740,7 @@ module.exports = function (Closeup) {
 
 
         this.$zoomImage.onload = cb;
+
         return this;
     };
 
@@ -807,11 +760,14 @@ module.exports = function (Closeup) {
      * @param {number} y
      */
     Closeup.prototype.setZoomPosition = function (x, y) {
+
         this._updateZoomPosition(x, y);
+
+        return this;
     };
 
 };
-},{"./subject":6}],6:[function(require,module,exports){
+},{"./subject":5}],5:[function(require,module,exports){
 
 /**
  * @constructor
@@ -823,90 +779,5 @@ module.exports = function (elem) {
     this.width   = elem.width;
     this.height  = elem.height;
     this.$elem   = elem;
-};
-},{}],7:[function(require,module,exports){
-/**
- *
- * @param {Closeup} context
- * @returns {Function}
- */
-function onTouchStart(context) {
-
-    var that = context;
-
-    return function (evt) {
-
-        if (!that.vars.zoomVisible) {
-            return;
-        } else {
-            evt.preventDefault();
-        }
-
-        that.touchOffsetX =
-            evt.touches[0].pageX
-                - that.$zoomImage.getBoundingClientRect().left
-                + that.$baseImage.getBoundingClientRect().left;
-
-        that.touchOffsetY =
-            evt.touches[0].pageY
-                - that.$zoomImage.getBoundingClientRect().top
-                + that.$baseImage.getBoundingClientRect().top;
-    };
-}
-
-/**
- * @param {Closeup} context
- * @returns {Function}
- * @private
- */
-function onTouchMove(context) {
-    var that = context;
-
-    return function (evt) {
-
-        if (!that.vars.zoomVisible) {
-            return;
-        } else {
-            evt.preventDefault();
-        }
-
-        var newY = 0;
-        var newX = 0;
-
-        var tempX = evt.touches[0].pageX - that.touchOffsetX;
-        var tempY = evt.touches[0].pageY - that.touchOffsetY;
-
-        var maxX  = that.zoomImg.maxX;
-        var maxY  = that.zoomImg.maxY;
-
-
-        if (tempY < 0) {
-
-            if (tempY < maxY) {
-                newY = maxY;
-            } else {
-                newY = evt.touches[0].pageY - that.touchOffsetY;
-            }
-        }
-
-        if (tempX < 0) {
-            if (tempX < maxX) {
-                newX = maxX;
-            } else {
-                newX = evt.touches[0].pageX - that.touchOffsetX;
-            }
-        }
-
-        that._updateElem(newX, newY);
-    };
-}
-
-/**
- * @param $elem
- */
-module.exports = function ($elem, context) {
-
-    $elem.addEventListener("touchstart", onTouchStart(context), false);
-    $elem.addEventListener("touchmove",  onTouchMove(context),  false);
 };
 },{}]},{},[3])
