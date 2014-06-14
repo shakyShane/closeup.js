@@ -380,7 +380,10 @@ Closeup.prototype._setMouseEvents = function (elem) {
         this._cb("not set mouse events");
         return this;
     }
-    
+    /** stripifnot:mouse **/
+    require("./mouse.events")(elem, this);
+    this._cb("set mouse events", this);
+    /** stripifnot:mouse:end **/
     return this;
 };
 
@@ -475,7 +478,14 @@ Closeup.prototype._imageLoaded = function () {
 
     this._updateElem(startPos.x, startPos.y);
 
-    
+    /**stripifnot:touch**/
+    if (!this.$zoomImage.hasTouchEvents && this.vars.touchEvents) {
+
+        require("./touch.events")($zoomImg, this);
+
+        this.$zoomImage.hasTouchEvents = true;
+    }
+    /**stripifnot:touch:end**/
 
     this.mapper.mapTo({
         height: $zoomImg.height,
@@ -627,7 +637,7 @@ require("./public")(Closeup);
 
 module.exports = Closeup;
 
-},{"../bower_components/norman.js/lib/norman.js":1,"./public":4,"./subject":5}],3:[function(require,module,exports){
+},{"../bower_components/norman.js/lib/norman.js":1,"./mouse.events":4,"./public":5,"./subject":6,"./touch.events":7}],3:[function(require,module,exports){
 var Closeup = require("./closeup");
 
 // AMD export
@@ -640,6 +650,164 @@ if(typeof define === "function" && define.amd) {
     window.Closeup = Closeup;
 }
 },{"./closeup":2}],4:[function(require,module,exports){
+/**
+ * Mouse Events
+ * @param elem
+ * @param context
+ */
+module.exports = function (elem, context) {
+
+    var that    = context;
+    var entered = false;
+    var exited  = false;
+
+    /**
+     * Click event on element if enabled in options
+     */
+    if (that.vars.toggleOnClick) {
+        document.body.addEventListener("click", clickEvent, false);
+    }
+
+    /**
+     * Move event on body
+     */
+    document.body.addEventListener("mousemove", mouseMove);
+
+    /**
+     * Mouse move event
+     * @param evt
+     */
+    function mouseMove (evt) {
+
+        var coords = inHitArea(evt.clientX, evt.clientY);
+
+        if (coords && (hitElement(evt) || that.vars.ignoreOverlays)) {
+            mouseEnter(evt);
+            that._updateZoomPosition(coords.x, coords.y);
+            that._cb("mouse move", coords);
+        } else {
+            mouseLeave(evt);
+        }
+    }
+
+    /**
+     * Click Event
+     * @param evt
+     */
+    function clickEvent (evt) {
+
+        evt.preventDefault();
+
+        if (inHitArea(evt.clientX, evt.clientY)) {
+
+            if (hitElement(evt) || that.vars.ignoreOverlays) {
+
+                if (!that.vars.zoomVisible) {
+                    that._setZoom("show", evt.clientX, evt.clientY);
+                    that.vars.canMove = true;
+                } else {
+                    that._setZoom("hide");
+                    that.vars.canMove = false;
+                }
+            }
+        }
+    }
+
+    /**
+     * Mouse enter
+     * @param evt
+     */
+    function mouseEnter(evt) {
+
+        if (!entered) {
+
+            if (that.vars.imageLoading) {
+                return;
+            }
+
+            that._cb("mouse enter", evt);
+
+            if (that.vars.showOnEnter) {
+                that.showZoomed();
+                that.vars.canMove = true;
+            } else {
+                if (!that.vars.toggleOnClick) {
+                    that.vars.canMove = false;
+                }
+            }
+
+            entered = true;
+        }
+    }
+
+    /**
+     * Mouse Leave
+     * @param evt
+     */
+    function mouseLeave(evt) {
+
+        // Can't leave if never entered
+        if (!entered) {
+            return;
+        } else {
+            exited = true;
+        }
+
+        that._cb("mouse leave", evt);
+
+        entered = false;
+
+        if (that.vars.zoomVisible) {
+            if (that.vars.hideOnExit) {
+                that.hideZoomed();
+                that.vars.canMove = false;
+            }
+        }
+    }
+
+    /**
+     * Helper for body event
+     * @param clientX
+     * @param clientY
+     * @returns {*}
+     */
+    function inHitArea(clientX, clientY) {
+
+        var inX = false;
+        var inY = false;
+
+        var x = that.baseImg.x - clientX;
+        var y = that.baseImg.y - clientY;
+
+        if (x < 0 && x > -that.$baseImage.width) {
+            x = Math.abs(x);
+            inX = true;
+        }
+        if (y < 0 && y > -that.$baseImage.height) {
+            y = Math.abs(y);
+            inY = true;
+        }
+
+        if (inX && inY) {
+            return {
+                x: x,
+                y: y
+            };
+        }
+
+        return false;
+    }
+
+    /**
+     * @param evt
+     * @returns {boolean|*}
+     */
+    function hitElement(evt) {
+        return evt.target.tagName === "IMG" && (evt.target.className.match(new RegExp(that.vars.zoomClass)));
+    }
+
+};
+},{}],5:[function(require,module,exports){
 var Subject = require("./subject");
 
 /**
@@ -767,7 +935,7 @@ module.exports = function (Closeup) {
     };
 
 };
-},{"./subject":5}],5:[function(require,module,exports){
+},{"./subject":6}],6:[function(require,module,exports){
 
 /**
  * @constructor
@@ -779,5 +947,90 @@ module.exports = function (elem) {
     this.width   = elem.width;
     this.height  = elem.height;
     this.$elem   = elem;
+};
+},{}],7:[function(require,module,exports){
+/**
+ *
+ * @param {Closeup} context
+ * @returns {Function}
+ */
+function onTouchStart(context) {
+
+    var that = context;
+
+    return function (evt) {
+
+        if (!that.vars.zoomVisible) {
+            return;
+        } else {
+            evt.preventDefault();
+        }
+
+        that.touchOffsetX =
+            evt.touches[0].pageX
+                - that.$zoomImage.getBoundingClientRect().left
+                + that.$baseImage.getBoundingClientRect().left;
+
+        that.touchOffsetY =
+            evt.touches[0].pageY
+                - that.$zoomImage.getBoundingClientRect().top
+                + that.$baseImage.getBoundingClientRect().top;
+    };
+}
+
+/**
+ * @param {Closeup} context
+ * @returns {Function}
+ * @private
+ */
+function onTouchMove(context) {
+    var that = context;
+
+    return function (evt) {
+
+        if (!that.vars.zoomVisible) {
+            return;
+        } else {
+            evt.preventDefault();
+        }
+
+        var newY = 0;
+        var newX = 0;
+
+        var tempX = evt.touches[0].pageX - that.touchOffsetX;
+        var tempY = evt.touches[0].pageY - that.touchOffsetY;
+
+        var maxX  = that.zoomImg.maxX;
+        var maxY  = that.zoomImg.maxY;
+
+
+        if (tempY < 0) {
+
+            if (tempY < maxY) {
+                newY = maxY;
+            } else {
+                newY = evt.touches[0].pageY - that.touchOffsetY;
+            }
+        }
+
+        if (tempX < 0) {
+            if (tempX < maxX) {
+                newX = maxX;
+            } else {
+                newX = evt.touches[0].pageX - that.touchOffsetX;
+            }
+        }
+
+        that._updateElem(newX, newY);
+    };
+}
+
+/**
+ * @param $elem
+ */
+module.exports = function ($elem, context) {
+
+    $elem.addEventListener("touchstart", onTouchStart(context), false);
+    $elem.addEventListener("touchmove",  onTouchMove(context),  false);
 };
 },{}]},{},[3])
