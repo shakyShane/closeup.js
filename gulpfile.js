@@ -22,7 +22,7 @@ gulp.task("build-lib", function () {
 
     return gulp.src("lib/index.js")
         .pipe(browserify())
-        .pipe(stripDebug())
+//        .pipe(stripDebug())
         .pipe(rename("closeup.js"))
         .pipe(gulp.dest("./dist"))
         .pipe(rename("closeup.min.js"))

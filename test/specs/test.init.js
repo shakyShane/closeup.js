@@ -47,3 +47,30 @@ asyncTest("Instance creation with chaining", function () {
             start();
         });
 });
+
+//otest("toggle Class", function () {
+//
+//    function toggle(string, className) {
+//        var regex = new RegExp(" ?%s ?".replace("%s", className));
+//        if (string.match(regex)) {
+//            return string.replace(regex, "");
+//        }
+//        return [string, className].join(" ");
+//    }
+//
+//    var subject = "image-zoomed";
+//    equal(toggle(subject, "active"), "image-zoomed active");
+//
+//    subject = "image-zoomed active";
+//    equal(toggle(subject, "active"), "image-zoomed");
+//
+//    subject = "active image-zoomed";
+//    equal(toggle(subject, "active"), "image-zoomed");
+//
+//    subject = "active image-active-zoomed";
+//    equal(toggle(subject, "active"), "image-active-zoomed");
+//
+//    subject = "active image-active-zoomed active-m";
+//    equal(toggle(subject, "active"), "image-active-zoomed active-m");
+//
+//});

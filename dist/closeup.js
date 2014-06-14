@@ -204,6 +204,7 @@
 },{}],2:[function(require,module,exports){
 var Norman = require("../bower_components/norman.js/lib/norman.js");
 var Subject = require("./subject");
+var utils = require("./utils");
 
 var STYLES = {
     wrapper: ["position: relative", "overflow: hidden"],
@@ -231,6 +232,17 @@ var DEFAULTS = {
     zoomClass: "zoom-image",
     boundary: 50,
     ignoreOverlays: false,
+    loader: false,
+    loaderElem: function () {
+        var elem = document.createElement("DIV");
+        elem.className = "image-loader";
+        elem.innerText = "loading...";
+        elem.style.position = "absolute";
+        elem.style.top = "0";
+        elem.style.left = "0";
+        return elem;
+    },
+    loaderActiveClass: "active",
     startPos: function (maxX, maxY) {
         return {
             x: maxX/2,
@@ -271,8 +283,8 @@ var Closeup = function (wrapper, baseImg, opts, cb) {
 
     return this._addCallbacks(opts)
         ._handleArguments(arguments)
-        ._initElements(wrapper, baseImg)
         ._setVars()
+        ._initElements(wrapper, baseImg)
         ._setSupports(this.vars, this.$wrapper)
         ._setMouseEvents(this.$wrapper)
         ._setMapping(this.$baseImage);
@@ -331,8 +343,6 @@ Closeup.prototype._setVars = function () {
     for (var optKey in this.opts) {
         this.vars[optKey] = this.opts[optKey];
     }
-
-    this.baseImg = new Subject(this.$baseImage);
 
     this._cb("set vars", this.vars);
 
@@ -517,8 +527,13 @@ Closeup.prototype._handleArguments = function (args) {
  */
 Closeup.prototype._cb = function (name, data) {
 
+    var internalListeners = require("./internals")(this);
+
     if (typeof this.callbacks[name] === "function") {
         this.callbacks[name].call(this, data);
+    }
+    if (typeof internalListeners[name] === "function") {
+        internalListeners[name].call(this, data);
     }
 };
 
@@ -542,8 +557,14 @@ Closeup.prototype._initElements = function (wrapper, baseImg) {
         return this._cb("init", ERRORS["no elements"]);
     }
 
+    if (this.vars.loader) {
+        this.$loader = this.vars.loaderElem();
+        this.$wrapper.appendChild(this.$loader);
+    }
+
     this.$wrapper.style.cssText   = STYLES.wrapper.join(";");
     this.$baseImage.style.cssText = STYLES.baseImg.join(";");
+    this.baseImg = new Subject(this.$baseImage);
 
     this._cb("init", this);
 
@@ -607,7 +628,7 @@ require("./public")(Closeup);
 
 module.exports = Closeup;
 
-},{"../bower_components/norman.js/lib/norman.js":1,"./mouse.events":4,"./public":5,"./subject":6,"./touch.events":7}],3:[function(require,module,exports){
+},{"../bower_components/norman.js/lib/norman.js":1,"./internals":4,"./mouse.events":5,"./public":6,"./subject":7,"./touch.events":8,"./utils":9}],3:[function(require,module,exports){
 var Closeup = require("./closeup");
 
 // AMD export
@@ -620,6 +641,28 @@ if(typeof define === "function" && define.amd) {
     window.Closeup = Closeup;
 }
 },{"./closeup":2}],4:[function(require,module,exports){
+var utils = require("./utils");
+
+module.exports = function (context) {
+
+    var that = context;
+
+    function getActive() {
+        if (that.$loader) {
+            that.$loader.className = utils.toggleClass(that.$loader, that.vars.loaderActiveClass);
+        }
+    }
+
+    return {
+        "zoom image loading": getActive,
+        "zoom image loaded": getActive,
+        "base image loading": getActive,
+        "base image loaded": getActive
+    };
+};
+
+
+},{"./utils":9}],5:[function(require,module,exports){
 /**
  * Mouse Events
  * @param elem
@@ -777,7 +820,7 @@ module.exports = function (elem, context) {
     }
 
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var Subject = require("./subject");
 
 /**
@@ -918,7 +961,7 @@ module.exports = function (Closeup) {
     };
 
 };
-},{"./subject":6}],6:[function(require,module,exports){
+},{"./subject":7}],7:[function(require,module,exports){
 
 /**
  * @constructor
@@ -931,7 +974,7 @@ module.exports = function (elem) {
     this.height  = elem.height;
     this.$elem   = elem;
 };
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /**
  *
  * @param {Closeup} context
@@ -1015,5 +1058,21 @@ module.exports = function ($elem, context) {
 
     $elem.addEventListener("touchstart", onTouchStart(context), false);
     $elem.addEventListener("touchmove",  onTouchMove(context),  false);
+};
+},{}],9:[function(require,module,exports){
+module.exports = {
+
+    toggleClass: function ($elem, className) {
+
+        var string = $elem.className;
+
+        var regex = new RegExp(" ?%s ?".replace("%s", className));
+
+        if (string.match(regex)) {
+            return string.replace(regex, "");
+        }
+
+        return [string, className].join(" ");
+    }
 };
 },{}]},{},[3])

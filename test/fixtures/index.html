@@ -69,6 +69,21 @@
             top: 0;
             z-index: 100;
         }
+
+        .image-loader {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            background: rgba(0,0,0,.5);
+            z-index: 10;
+            color: white;
+        }
+        .image-loader.active {
+            display: block;
+        }
     </style>
 </head>
 <!--<body class="ie7">-->
@@ -117,8 +132,15 @@
             toggleOnClick: true,
             hideOnExit: false,
             mouseEvents: true,
-            baseImageDelay: 3000,
-            zoomImageDelay: 3000,
+            loader: true,
+//            loader: function () {
+//                var elem = document.createElement("DIV");
+//                elem.className = "image-loader";
+//                elem.innerText = "loading...";
+//                return elem;
+//            },
+            baseImageDelay: 500,
+            zoomImageDelay: 500,
 //            ignoreOverlays: true,
             callbacks: {
                 "zoom image loading": function () {
@@ -151,7 +173,9 @@
         var zoomer = window.zoomer = new Closeup($window, $base, config);
         var link = document.querySelector("#next").addEventListener("click", function (evt) {
             evt.preventDefault();
-            zoomer.setZoomImage("img/1200.jpg");
+            zoomer.setZoomImage("img/1200.jpg", function () {
+                zoomer.showZoomed();
+            });
         });
     });
 </script>
