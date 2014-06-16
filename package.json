@@ -41,7 +41,8 @@
     "gulp-rename": "~1.2.0",
     "gulp-concat": "~2.2.0",
     "gulp-browserify": "^0.5.0",
-    "gulp-strip-debug": "^0.3.0"
+    "gulp-strip-debug": "^0.3.0",
+    "through2": "^0.5.1"
   },
   "keywords": [],
   "dependencies": {}

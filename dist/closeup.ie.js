@@ -305,7 +305,7 @@ var DEFAULTS = {
  */
 var Closeup = function (wrapper, baseImg, opts, cb) {
 
-    this.const = {
+    this.constants = {
         STYLES: STYLES,
         ERRORS: ERRORS,
         DEFAULTS: DEFAULTS
@@ -841,12 +841,18 @@ module.exports = function (elem, context) {
         return false;
     }
 
+    function isMatch(target, evt) {
+        return target.tagName === "IMG" && (evt.target.className.match(new RegExp(that.vars.zoomClass)));
+    }
+
     /**
      * @param evt
      * @returns {boolean|*}
      */
     function hitElement(evt) {
-        return evt.target.tagName === "IMG" && (evt.target.className.match(new RegExp(that.vars.zoomClass)));
+
+        var target = evt.target || evt.srcElement;
+        return isMatch(target, evt);
     }
 
 };
@@ -906,7 +912,7 @@ module.exports = function (Closeup) {
             if (that.$baseImage.src.indexOf(src) > -1) {
                 cb();
             } else {
-                that.$baseImage.src = src;
+                that.$baseImage.sr = src;
             }
         }, this.vars.baseImageDelay);
 
@@ -938,7 +944,7 @@ module.exports = function (Closeup) {
 
             setSrc = true;
 
-            this.$zoomImage.style.cssText = this.const.STYLES.zoomImg.join(";");
+            this.$zoomImage.style.cssText = this.constants.STYLES.zoomImg.join(";");
 
             this.$wrapper.appendChild(this.$zoomImage);
 
