@@ -912,7 +912,7 @@ module.exports = function (Closeup) {
             if (that.$baseImage.src.indexOf(src) > -1) {
                 cb();
             } else {
-                that.$baseImage.sr = src;
+                that.$baseImage.src = src;
             }
         }, this.vars.baseImageDelay);
 

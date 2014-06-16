@@ -811,10 +811,6 @@ module.exports = function (elem, context) {
         return false;
     }
 
-    function isMatch(target, evt) {
-        return target.tagName === "IMG" && (evt.target.className.match(new RegExp(that.vars.zoomClass)));
-    }
-
     /**
      * @param evt
      * @returns {boolean|*}
@@ -822,7 +818,7 @@ module.exports = function (elem, context) {
     function hitElement(evt) {
 
         var target = evt.target || evt.srcElement;
-        return isMatch(target, evt);
+        return target.tagName === "IMG" && (target.className.match(new RegExp(that.vars.zoomClass)));
     }
 
 };
