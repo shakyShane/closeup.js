@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: sans-serif;
         }
@@ -14,6 +17,7 @@
             text-align: center;
             display: inline-block;
             position: relative;
+            width: 100%;
         }
 
         .image {
@@ -69,6 +73,10 @@
             top: 0;
             z-index: 100;
         }
+        .zoom-image {
+            opacity: 0;
+            transition: opacity 1s;
+        }
 
         .image-loader {
             display: none;
@@ -84,6 +92,14 @@
         .image-loader.active {
             display: block;
         }
+
+        #zoom-window {
+            background: red;
+            max-width: 100%;
+        }
+        #zoom-window .base-image {
+            width: 100%;
+        }
     </style>
 </head>
 <!--<body class="ie7">-->
@@ -92,7 +108,7 @@
 <div class="wrapper">
 
     <div class="image" id="zoom-window">
-        <img src="img/01-base.jpg" alt="" width="353" class="base-image" />
+        <img src="img/01-base.jpg" alt="" class="base-image" />
     </div>
 
     <div class="controls">
@@ -128,41 +144,41 @@
 
         var config = {
             loadDelay: 0,
-            showOnEnter: false,
+            showOnEnter: true,
             toggleOnClick: true,
-            hideOnExit: false,
+            hideOnExit: true,
             mouseEvents: true,
             loader: true,
-//            loader: function () {
+//            loaderElem: function () {
 //                var elem = document.createElement("DIV");
 //                elem.className = "image-loader";
 //                elem.innerText = "loading...";
 //                return elem;
 //            },
-            baseImageDelay: 500,
-            zoomImageDelay: 500,
-//            ignoreOverlays: true,
+            baseImageDelay: 2000,
+            zoomImageDelay: 2000,
+            ignoreOverlays: false,
             callbacks: {
                 "zoom image loading": function () {
-                    console.log("Zoom image loading");
+//                    console.log("Zoom image loading");
                 },
                 "zoom image loaded": function () {
-                    console.log("Zoom image loaded");
+//                    console.log("Zoom image loaded");
                 },
                 "base image loading": function () {
-                    console.log("Base image loading");
+//                    console.log("Base image loading");
                 },
                 "base image loaded": function () {
-                    console.log("Base image loaded");
+//                    console.log("Base image loaded");
                 },
                 "update zoom position": function () {
 //                    console.log("got here");
                 },
                 "mouse leave": function () {
-                    console.log("Mouse left the object");
+//                    console.log("Mouse left the object");
                 },
                 "mouse enter": function () {
-                    console.log("Mouse Entered the object");
+//                    console.log("Mouse Entered the object");
                 }
             }
         };
@@ -170,13 +186,21 @@
         var $window = document.querySelector("#zoom-window");
         var $base   = document.querySelector(".base-image");
 
-        var zoomer = window.zoomer = new Closeup($window, $base, config);
-        var link = document.querySelector("#next").addEventListener("click", function (evt) {
-            evt.preventDefault();
-            zoomer.setZoomImage("img/1200.jpg", function () {
+        var zoomer = window.zoomer =
+            new Closeup($window, $base, config).setZoomImage("img/1200.jpg", function () {
                 zoomer.showZoomed();
             });
+
+        window.addEventListener("resize", function () {
+            zoomer.refresh();
         });
+
+//        var link = document.querySelector("#next").addEventListener("click", function (evt) {
+//            evt.preventDefault();
+//            zoomer.setZoomImage("img/1200.jpg", function () {
+//                zoomer.showZoomed();
+//            });
+//        });
     });
 </script>
 

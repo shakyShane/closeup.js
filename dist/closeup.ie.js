@@ -266,7 +266,7 @@ var DEFAULTS = {
     loaderElem: function () {
         var elem = document.createElement("DIV");
         elem.className = "image-loader";
-        elem.innerText = "loading...";
+        elem.innerHTML = "loading...";
         elem.style.position = "absolute";
         elem.style.top = "0";
         elem.style.left = "0";
@@ -348,13 +348,20 @@ Closeup.prototype._setMapping = function ($elem) {
  * from the base image
  *
  * @param {HTMLImageElement} $elem
+ * @param {HTMLImageElement} $zoomImg
  */
-Closeup.prototype._updateMapping = function ($elem) {
+Closeup.prototype._updateMapping = function ($elem, $zoomImg) {
 
-    this.mapper.viewBox.width = $elem.width;
-    this.mapper.viewBox.height = $elem.height;
+    if ($elem && $zoomImg) {
 
-    this._cb("update mapping", this.mapper);
+        this.baseImg = new Subject($elem);
+        this.zoomImg = new Subject($zoomImg);
+
+        this.mapper.viewBox.width = this.baseImg.width;
+        this.mapper.viewBox.height = this.baseImg.height;
+
+        this._cb("update mapping", this.mapper);
+    }
 
     return this;
 };
@@ -722,6 +729,10 @@ module.exports = function (elem, context) {
      */
     function mouseMove (evt) {
 
+        if (that.vars.imageLoading) {
+            return;
+        }
+
         var coords = inHitArea(evt.clientX, evt.clientY);
 
         if (coords && (hitElement(evt) || that.vars.ignoreOverlays)) {
@@ -822,11 +833,11 @@ module.exports = function (elem, context) {
         var x = that.baseImg.x - clientX;
         var y = that.baseImg.y - clientY;
 
-        if (x < 0 && x > -that.$baseImage.width) {
+        if (x < 0 && x > -that.baseImg.width) {
             x = Math.abs(x);
             inX = true;
         }
-        if (y < 0 && y > -that.$baseImage.height) {
+        if (y < 0 && y > -that.baseImg.height) {
             y = Math.abs(y);
             inY = true;
         }
@@ -976,7 +987,7 @@ module.exports = function (Closeup) {
      */
     Closeup.prototype.refresh = function () {
 
-        this._updateMapping(this.$baseImage);
+        this._updateMapping(this.$baseImage, this.$zoomImage);
 
         return this;
     };

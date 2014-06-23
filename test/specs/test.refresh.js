@@ -8,6 +8,7 @@ test("Refreshing the viewbox size", function () {
 
     zoomer.$baseImage.width = 1000;
     zoomer.$baseImage.height = 200;
+    zoomer.$zoomImage = document.createElement("IMG");
 
     zoomer.refresh();
 
@@ -24,6 +25,7 @@ test("Refreshing the viewbox size with method chaining", function () {
     zoomer.$baseImage.height = 200;
 
     var instance = zoomer.refresh().showZoomed();
+    zoomer.$zoomImage = document.createElement("IMG");
 
     ok(instance instanceof Closeup);
 });
