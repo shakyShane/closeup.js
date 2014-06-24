@@ -1,6 +1,6 @@
 {
     "name": "closeup.js",
-    "version": "0.2.7",
+    "version": "0.3.0",
     "main": [
         "dist/closeup.min.js"
     ],
@@ -9,7 +9,7 @@
     },
     "ignore": [
         "node_modules/",
-        "bower_components",
+        "bower_components/",
         "test/",
         ".travis.yml",
         ".gitignore",
