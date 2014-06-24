@@ -395,29 +395,29 @@ Closeup.prototype._updateZoomPosition = function (x, y) {
  */
 Closeup.prototype._onLoadCallback = function (userCallback) {
 
-    var that = this;
     var supports = this.vars.supports;
 
     return function () {
 
         if (!supports.opacity) {
-            that.$zoomImage.style.display = "none";
+            this.$zoomImage.style.display = "none";
         }
 
-        that._imageLoaded();
+        this._imageLoaded();
 
         window.setTimeout(function () {
 
-            that.vars.imageLoading = false;
+            this.vars.imageLoading = false;
 
-            that._cb("zoom image loaded", that.$zoomImage);
+            this._cb("zoom image loaded", this.$zoomImage);
 
             if (typeof userCallback === "function") {
-                userCallback.call(that, that.$zoomImage);
+                userCallback.call(this, this.$zoomImage);
             }
 
-        }, that.opts.loadDelay || 0);
-    };
+        }.bind(this), this.opts.loadDelay || 0);
+
+    }.bind(this);
 };
 
 /**
@@ -867,31 +867,33 @@ module.exports = function (Closeup) {
     Closeup.prototype.setBaseImage = function (src, userCallback) {
 
         this.vars.baseImageLoading = true;
-        this._cb("base image loading", src);
 
-        var that = this;
+        this._cb("base image loading", src);
 
         var cb = function () {
 
-            that.vars.baseImageLoading = false;
-            that.baseImg = new Subject(that.$baseImage);
-            that._updateMapping(that.$baseImage);
+            this.vars.baseImageLoading = false;
+            this.baseImg = new Subject(this.$baseImage);
+            this._updateMapping(this.$baseImage);
 
-            that._cb("base image loaded", that.$baseImage);
+            this._cb("base image loaded", this.$baseImage);
 
             if (typeof userCallback === "function") {
-                userCallback(that.$baseImage);
+                userCallback(this.$baseImage);
             }
-        };
+
+        }.bind(this);
 
         window.setTimeout(function () {
+
             // Fire callbacks if same src
-            if (that.$baseImage.src.indexOf(src) > -1) {
+            if (this.$baseImage.src.indexOf(src) > -1) {
                 cb();
             } else {
-                that.$baseImage.src = src;
+                this.$baseImage.src = src;
             }
-        }, this.vars.baseImageDelay);
+
+        }.bind(this), this.vars.baseImageDelay);
 
         this.$baseImage.onload = cb;
 

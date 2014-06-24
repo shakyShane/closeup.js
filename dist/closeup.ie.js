@@ -27,7 +27,33 @@
         addListen(doc.all);
     }
 
+    if (!Function.prototype.bind) {
+        Function.prototype.bind = function (oThis) {
+            if (typeof this !== "function") {
+                // closest thing possible to the ECMAScript 5
+                // internal IsCallable function
+                throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+            }
+
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                fNOP = function () {},
+                fBound = function () {
+                    return fToBind.apply(this instanceof fNOP && oThis
+                            ? this
+                            : oThis,
+                        aArgs.concat(Array.prototype.slice.call(arguments)));
+                };
+
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
+
+            return fBound;
+        };
+    }
+    
 })(window, document);
+
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
     "use strict";
 
@@ -897,31 +923,33 @@ module.exports = function (Closeup) {
     Closeup.prototype.setBaseImage = function (src, userCallback) {
 
         this.vars.baseImageLoading = true;
-        this._cb("base image loading", src);
 
-        var that = this;
+        this._cb("base image loading", src);
 
         var cb = function () {
 
-            that.vars.baseImageLoading = false;
-            that.baseImg = new Subject(that.$baseImage);
-            that._updateMapping(that.$baseImage);
+            this.vars.baseImageLoading = false;
+            this.baseImg = new Subject(this.$baseImage);
+            this._updateMapping(this.$baseImage);
 
-            that._cb("base image loaded", that.$baseImage);
+            this._cb("base image loaded", this.$baseImage);
 
             if (typeof userCallback === "function") {
-                userCallback(that.$baseImage);
+                userCallback(this.$baseImage);
             }
-        };
+
+        }.bind(this);
 
         window.setTimeout(function () {
+
             // Fire callbacks if same src
-            if (that.$baseImage.src.indexOf(src) > -1) {
+            if (this.$baseImage.src.indexOf(src) > -1) {
                 cb();
             } else {
-                that.$baseImage.src = src;
+                this.$baseImage.src = src;
             }
-        }, this.vars.baseImageDelay);
+
+        }.bind(this), this.vars.baseImageDelay);
 
         this.$baseImage.onload = cb;
 
