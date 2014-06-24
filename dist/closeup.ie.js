@@ -451,29 +451,29 @@ Closeup.prototype._updateZoomPosition = function (x, y) {
  */
 Closeup.prototype._onLoadCallback = function (userCallback) {
 
-    var that = this;
     var supports = this.vars.supports;
 
     return function () {
 
         if (!supports.opacity) {
-            that.$zoomImage.style.display = "none";
+            this.$zoomImage.style.display = "none";
         }
 
-        that._imageLoaded();
+        this._imageLoaded();
 
         window.setTimeout(function () {
 
-            that.vars.imageLoading = false;
+            this.vars.imageLoading = false;
 
-            that._cb("zoom image loaded", that.$zoomImage);
+            this._cb("zoom image loaded", this.$zoomImage);
 
             if (typeof userCallback === "function") {
-                userCallback.call(that, that.$zoomImage);
+                userCallback.call(this, this.$zoomImage);
             }
 
-        }, that.opts.loadDelay || 0);
-    };
+        }.bind(this), this.opts.loadDelay || 0);
+
+    }.bind(this);
 };
 
 /**
